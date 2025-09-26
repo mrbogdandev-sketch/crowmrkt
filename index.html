@@ -1,0 +1,512 @@
+<!doctype html>
+<!--
+  CrowMRKT — single-file concept
+  Dark black ↔ orange market to buy birds and get passive income from them.
+  - Responsive (mobile/tablet/desktop)
+  - Glassmorphism (matte transparent) + glossy accents
+  - Figma-like clean layout
+  - Vanilla HTML / CSS / JS (easy to plug into a project)
+
+  Save as `crowmrkt.html` and open in a browser. 
+-->
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1,viewport-fit=cover" />
+  <title>CrowMRKT — Marketplace птиц</title>
+  <meta name="description" content="CrowMRKT — покупай птиц, получай пассивный доход. Концепт: тёмная тема, стеклянные карточки, адаптивный дизайн." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1: #070707; /* deep black */
+      --bg-2: #0f0b0a; /* slightly lighter */
+      --accent: #ff7a18; /* orange */
+      --accent-2: #ffb86b; /* soft orange */
+      --glass-1: rgba(255,255,255,0.03);
+      --glass-2: rgba(255,255,255,0.05);
+      --muted: rgba(255,255,255,0.6);
+      --card-radius: 14px;
+      --shadow-1: 0 6px 18px rgba(0,0,0,0.6);
+      --glass-border: rgba(255,255,255,0.06);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      color-scheme: dark;
+    }
+
+    /* Reset */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      min-height:100%;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(255,122,24,0.06), transparent 8%),
+                  linear-gradient(180deg,var(--bg-1),var(--bg-2));
+      color:#fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:32px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      gap:24px;
+      font-size:16px;
+      line-height:1.4;
+    }
+
+    /* Container */
+    .app{
+      width:1100px;
+      max-width:100%;
+      display:grid;
+      grid-template-columns: 340px 1fr;
+      gap:24px;
+      align-items:start;
+    }
+
+    /* Sidebar (left) */
+    .sidebar{
+      background: linear-gradient(180deg,var(--glass-1), var(--glass-2));
+      border-radius:18px;
+      padding:20px;
+      backdrop-filter: blur(10px) saturate(120%);
+      -webkit-backdrop-filter: blur(10px) saturate(120%);
+      border:1px solid var(--glass-border);
+      box-shadow: var(--shadow-1);
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      min-height:520px;
+    }
+
+    .brand{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .logo{
+      width:56px;height:56px;border-radius:12px;
+      background:linear-gradient(135deg,var(--accent), #ff4200);
+      display:grid;place-items:center;
+      box-shadow: 0 6px 18px rgba(255,122,24,0.12), inset 0 -6px 14px rgba(0,0,0,0.3);
+      font-weight:800;font-size:20px;color:#0b0b0b;
+    }
+    .brand h1{font-size:18px;margin:0}
+    .brand p{margin:0;font-size:13px;color:var(--muted)}
+
+    .wallet{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .balance{font-weight:700;font-size:18px}
+    .small{font-size:13px;color:var(--muted)}
+
+    .stats{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;
+    }
+    .stat{
+      padding:10px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.2), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.02);
+      text-align:center;
+    }
+    .stat .num{font-weight:700;font-size:18px}
+    .stat .lbl{font-size:12px;color:var(--muted)}
+
+    .filters{
+      display:flex;flex-direction:column;gap:10px;margin-top:6px
+    }
+    .search{
+      display:flex;gap:8px;align-items:center;background:rgba(0,0,0,0.25);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.02);
+    }
+    .search input{background:transparent;border:0;outline:0;color:inherit;width:100%}
+
+    .filter-list{display:flex;flex-direction:column;gap:8px}
+    .pill{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,0.03);background:transparent;font-size:13px;cursor:pointer}
+
+    /* Main area */
+    .main{
+      display:flex;flex-direction:column;gap:20px;min-height:520px;
+    }
+
+    .topbar{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+    }
+    .breadcrumbs{color:var(--muted);font-size:13px}
+    .actions{display:flex;gap:12px;align-items:center}
+    .btn{
+      padding:10px 14px;border-radius:12px;border:0;background:transparent;color:var(--accent);font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,0.03);
+      backdrop-filter: blur(6px);
+    }
+
+    /* Hero / featured */
+    .hero{
+      display:grid;grid-template-columns:1fr 220px;gap:18px;align-items:center;
+      background:linear-gradient(90deg, rgba(255,122,24,0.06), rgba(255,184,100,0.02));
+      padding:18px;border-radius:14px;border:1px solid rgba(255,122,24,0.06);
+    }
+    .hero-left h2{margin:0;font-size:20px}
+    .hero-left p{color:var(--muted);margin-top:6px}
+
+    .income-card{padding:12px;border-radius:12px;background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.02);text-align:center}
+    .income-card .big{font-weight:800;font-size:22px}
+
+    /* Marketplace grid */
+    .grid{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:18px
+    }
+    .card{
+      border-radius:16px;padding:14px;min-height:220px;display:flex;flex-direction:column;gap:12px;justify-content:space-between;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.03);
+      transition:transform .22s ease, box-shadow .22s ease;
+      position:relative;overflow:hidden;
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(0,0,0,0.6)}
+
+    .bird-thumb{height:110px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg, rgba(255,122,24,0.06), rgba(255,122,24,0.02));border:1px solid rgba(255,255,255,0.02)}
+    .bird-name{font-weight:700}
+    .tags{display:flex;gap:8px;flex-wrap:wrap}
+    .tag{font-size:12px;padding:6px 8px;border-radius:999px;border:1px solid rgba(255,255,255,0.03);background:transparent}
+
+    .price-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .price{font-weight:800}
+
+    .buy{
+      padding:10px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent), var(--accent-2));color:#0b0b0b;font-weight:700;cursor:pointer;box-shadow:0 8px 18px rgba(255,122,24,0.12);
+    }
+
+    /* Modal */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:20px}
+    .overlay.show{display:flex}
+    .modal{width:520px;max-width:100%;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);backdrop-filter:blur(8px)}
+
+    /* footer / small */
+    footer{color:var(--muted);font-size:13px;text-align:center;margin-top:8px}
+
+    /* Mobile */
+    @media (max-width:980px){
+      .app{grid-template-columns:1fr;padding:0}
+      .sidebar{order:2}
+      .main{order:1}
+      .grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:560px){
+      body{padding:16px}
+      .grid{grid-template-columns:1fr}
+      .hero{grid-template-columns:1fr}
+      .brand h1{font-size:16px}
+      .logo{width:48px;height:48px}
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+    .gloss{background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));-webkit-background-clip:padding-box}
+
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" aria-label="Панель управления">
+      <div class="brand">
+        <div class="logo">CM</div>
+        <div>
+          <h1>CrowMRKT</h1>
+          <p>Marketplace питомцев — покупай птиц и получай пассивный доход</p>
+        </div>
+      </div>
+
+      <div class="wallet" aria-live="polite">
+        <div>
+          <div class="small">Баланс</div>
+          <div class="balance" id="walletBalance">0.00 Ꝑ</div>
+        </div>
+        <div class="small">
+          <div class="muted">Доход / день</div>
+          <div id="dailyIncome">0.00 Ꝑ</div>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="num" id="ownedCount">0</div>
+          <div class="lbl">Птиц в портфеле</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="totalIncome">0.00 Ꝑ</div>
+          <div class="lbl">Всего заработано</div>
+        </div>
+      </div>
+
+      <div class="filters">
+        <div class="search" role="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden><path stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.6"/></svg>
+          <input id="search" placeholder="Поиск птиц, редкость..." />
+        </div>
+
+        <div class="filter-list" id="filterList">
+          <button class="pill" data-filter="all">Все</button>
+          <button class="pill" data-filter="common">Обычные</button>
+          <button class="pill" data-filter="rare">Редкие</button>
+          <button class="pill" data-filter="epic">Эпические</button>
+        </div>
+
+        <div class="muted" style="font-size:13px">Советы: покупай птиц разных редкостей чтобы диверсифицировать доход.</div>
+      </div>
+
+      <div style="margin-top:auto;font-size:12px;color:var(--muted)">Версия: концепт • Дизайн: тёмная / оранж.</div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div>
+          <div class="breadcrumbs">Маркет / Птицы</div>
+          <h2 style="margin:6px 0 0 0">Купить птиц — начни получать пассивный доход</h2>
+        </div>
+        <div class="actions">
+          <button class="btn" id="btnPortfolio">Моё портфолио</button>
+          <button class="btn" id="btnBuyRandom">Купить рандомную</button>
+        </div>
+      </div>
+
+      <section class="hero">
+        <div class="hero-left">
+          <h2>Добро пожаловать в CrowMRKT</h2>
+          <p class="muted">Покупай птиц, следи за ежедневным доходом и увеличивай баланс — всё на одной панели.</p>
+          <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+            <button class="buy" id="startBuy">Купить сейчас</button>
+            <div class="muted" style="font-size:13px">Пробная демонстрация пассивного дохода</div>
+          </div>
+        </div>
+        <div>
+          <div class="income-card">
+            <div class="muted">Текущий ежедневный доход</div>
+            <div class="big" id="panelDaily">0.00 Ꝑ / день</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:8px">Доход обновляется каждую секунду в демо-режиме</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <h3 style="margin:0">Маркет</h3>
+          <div class="muted">Найдено: <span id="foundCount">0</span></div>
+        </div>
+
+        <div class="grid" id="marketGrid" aria-live="polite">
+          <!-- cards injected by JS -->
+        </div>
+      </section>
+
+      <footer>© CrowMRKT — концепт. Дизайн: чёрно-оранжевый, стекло, глянец.</footer>
+    </main>
+
+  </div>
+
+  <!-- MODAL -->
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="modal" role="document">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h3 id="modalTitle" style="margin:0">Купить птицу</h3>
+          <div class="muted" id="modalRarity">Редкость</div>
+        </div>
+        <button class="btn" id="modalClose">Закрыть</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+        <div style="width:120px;height:120px;border-radius:12px;background:linear-gradient(135deg, rgba(255,122,24,0.06), rgba(255,122,24,0.02));display:grid;place-items:center" id="modalThumb">🐦</div>
+        <div>
+          <div class="muted">Цена</div>
+          <div id="modalPrice" style="font-weight:800;font-size:18px">0 Ꝑ</div>
+          <div style="margin-top:10px;color:var(--muted)" id="modalIncome">Доход: 0 Ꝑ / день</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn" id="modalBuy">Купить</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Demo data for birds — can be replaced by API
+    const birds = [
+      {id:1,name:'Грач-Основатель',rarity:'epic',price:120.00,daily:6.40,emoji:'🪶'},
+      {id:2,name:'Полевой грач',rarity:'common',price:12.00,daily:0.40,emoji:'🪶'},
+      {id:3,name:'Огненная цапля',rarity:'rare',price:55.00,daily:2.10,emoji:'🔥'},
+      {id:4,name:'Ночная ворона',rarity:'epic',price:200.00,daily:9.00,emoji:'🌙'},
+      {id:5,name:'Серый певун',rarity:'common',price:9.00,daily:0.28,emoji:'🎶'},
+      {id:6,name:'Золотой кроу',rarity:'rare',price:78.00,daily:3.20,emoji:'✨'},
+      {id:7,name:'Болотный клекот',rarity:'common',price:15.00,daily:0.55,emoji:'🌿'},
+      {id:8,name:'Закатный ворон',rarity:'rare',price:64.00,daily:2.55,emoji:'🌇'},
+      {id:9,name:'Императорский грач',rarity:'epic',price:350.00,daily:17.8,emoji:'👑'}
+    ];
+
+    // App state
+    const state = {
+      balance: 50.00, // стартовый баланс
+      owned: [],
+      totalEarned: 0,
+      filters: {q:'', rarity:'all'}
+    }
+
+    // Utils
+    const $ = (sel)=>document.querySelector(sel);
+    const $$ = (sel)=>Array.from(document.querySelectorAll(sel));
+
+    // Render market
+    function renderMarket(){
+      const grid = $('#marketGrid');
+      grid.innerHTML='';
+      const q = state.filters.q.trim().toLowerCase();
+      const filtered = birds.filter(b=>{
+        if(state.filters.rarity!=='all' && b.rarity!==state.filters.rarity) return false;
+        if(q && !(b.name.toLowerCase().includes(q) || b.rarity.includes(q))) return false;
+        return true;
+      });
+      $('#foundCount').textContent = filtered.length;
+
+      filtered.forEach(b=>{
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div>
+            <div class="bird-thumb">${b.emoji}<div style="position:absolute;right:8px;top:8px;font-size:12px;padding:6px;border-radius:8px;background:linear-gradient(90deg, rgba(0,0,0,0.15), rgba(255,122,24,0.02));border:1px solid rgba(255,255,255,0.03)">${b.rarity.toUpperCase()}</div></div>
+            <div style="margin-top:8px;display:flex;justify-content:space-between;align-items:flex-start">
+              <div>
+                <div class="bird-name">${b.name}</div>
+                <div class="muted" style="font-size:13px;margin-top:6px">Доход: ${b.daily.toFixed(2)} Ꝑ / день</div>
+              </div>
+              <div style="text-align:right">
+                <div class="price">${b.price.toFixed(2)} Ꝑ</div>
+                <div class="muted" style="font-size:12px">ID ${b.id}</div>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="tags">
+              <div class="tag">${b.rarity}</div>
+              <div class="tag">Пассивный</div>
+            </div>
+            <div>
+              <button class="buy" data-id="${b.id}">Купить</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      // attach buy handlers
+      $$('.buy').forEach(btn=>btn.addEventListener('click',()=>openModal(btn.dataset.id)));
+    }
+
+    // Update sidebar / header info
+    function updatePanels(){
+      $('#walletBalance').textContent = state.balance.toFixed(2) + ' Ꝑ';
+      $('#ownedCount').textContent = state.owned.length;
+      $('#totalIncome').textContent = state.totalEarned.toFixed(2) + ' Ꝑ';
+
+      const daily = state.owned.reduce((s,id)=>{
+        const b = birds.find(x=>x.id==id); return s + (b?b.daily:0)
+      },0);
+      $('#dailyIncome').textContent = daily.toFixed(2) + ' Ꝑ';
+      $('#panelDaily').textContent = daily.toFixed(2) + ' Ꝑ / день';
+    }
+
+    // Modal logic
+    let currentModalId = null;
+    function openModal(id){
+      const b = birds.find(x=>x.id==id);
+      if(!b) return;
+      currentModalId = b.id;
+      $('#modalTitle').textContent = b.name;
+      $('#modalRarity').textContent = (b.rarity || '').toUpperCase();
+      $('#modalPrice').textContent = b.price.toFixed(2) + ' Ꝑ';
+      $('#modalThumb').textContent = b.emoji;
+      $('#modalIncome').textContent = 'Доход: ' + b.daily.toFixed(2) + ' Ꝑ / день';
+      $('#overlay').classList.add('show');
+    }
+    function closeModal(){
+      currentModalId = null;
+      $('#overlay').classList.remove('show');
+    }
+
+    // Buy action
+    function buyCurrent(){
+      if(!currentModalId) return;
+      const b = birds.find(x=>x.id==currentModalId);
+      if(!b) return;
+      if(state.balance < b.price){
+        alert('Недостаточно средств. Пополните баланс.');
+        return;
+      }
+      state.balance -= b.price;
+      state.owned.push(b.id);
+      // simulate immediate earned as bonus
+      const earned = b.daily * 0.2; // бонус 20% of daily as instant credit for demo
+      state.totalEarned += earned;
+      updatePanels();
+      closeModal();
+      renderMarket();
+    }
+
+    // Passive income accrual (demo) — adds tiny increments to balance over time
+    function startIncomeTicker(){
+      setInterval(()=>{
+        const perSec = state.owned.reduce((s,id)=>{
+          const b = birds.find(x=>x.id==id); return s + ((b?b.daily:0)/86400)
+        },0);
+        // give small amounts, precision limited
+        state.balance += perSec;
+        state.totalEarned += perSec;
+        // update displays (throttled minimal)
+        updatePanels();
+      },1000);
+    }
+
+    // Search & filter handlers
+    $('#search').addEventListener('input', (e)=>{
+      state.filters.q = e.target.value;
+      renderMarket();
+    });
+    $$('#filterList .pill').forEach(btn=>btn.addEventListener('click', (e)=>{
+      $$('#filterList .pill').forEach(p=>p.style.opacity=1);
+      btn.style.opacity = 0.8;
+      state.filters.rarity = btn.dataset.filter;
+      renderMarket();
+    }));
+
+    // other buttons
+    $('#modalClose').addEventListener('click', closeModal);
+    $('#modalBuy').addEventListener('click', buyCurrent);
+    $('#startBuy').addEventListener('click', ()=>{
+      // open first affordable or random
+      const affordable = birds.find(b=>b.price <= state.balance) || birds[Math.floor(Math.random()*birds.length)];
+      openModal(affordable.id);
+    });
+    $('#btnBuyRandom').addEventListener('click', ()=>{
+      const b = birds[Math.floor(Math.random()*birds.length)];
+      if(b) openModal(b.id);
+    });
+    $('#btnPortfolio').addEventListener('click', ()=>{
+      if(state.owned.length===0) return alert('У вас пока нет птиц в портфеле.');
+      const names = state.owned.map(id=>birds.find(b=>b.id==id).name).join('\n');
+      alert('Ваши птицы:\n' + names);
+    });
+
+    // Init
+    (function init(){
+      renderMarket();
+      updatePanels();
+      startIncomeTicker();
+      // small UX: preselect 'all'
+      document.querySelector('[data-filter="all"]').style.opacity=0.8;
+      // accessibility: close modal on ESC
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeModal(); });
+    })();
+
+  </script>
+</body>
+</html>
