@@ -177,6 +177,45 @@
             color: var(--text-muted);
         }
 
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 32px;
+            background: var(--bg-glass);
+            border-radius: var(--border-radius);
+            padding: 8px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 14px 20px;
+            background: transparent;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            color: var(--text-muted);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            font-family: inherit;
+            font-size: 15px;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255,255,255,0.08);
+            color: var(--text-primary);
+        }
+
+        .nav-tab.active {
+            background: rgba(255,215,0,0.15);
+            color: var(--accent-primary);
+            box-shadow: 0 4px 20px rgba(255,215,0,0.2);
+        }
+
         /* Stats Grid */
         .stats-grid {
             display: grid;
@@ -605,6 +644,74 @@
             box-shadow: none !important;
         }
 
+        /* Leaderboard */
+        .leaderboard {
+            background: var(--bg-glass);
+            border-radius: var(--border-radius);
+            padding: 28px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: rgba(0,0,0,0.3);
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+
+        .leaderboard-item:hover {
+            background: rgba(255,255,255,0.08);
+            transform: translateX(4px);
+        }
+
+        .leaderboard-item.current-user {
+            background: rgba(255,215,0,0.15);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        .leaderboard-rank {
+            font-size: 18px;
+            font-weight: 800;
+            width: 32px;
+            text-align: center;
+            color: var(--accent-primary);
+        }
+
+        .leaderboard-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .leaderboard-info {
+            flex: 1;
+        }
+
+        .leaderboard-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .leaderboard-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
         /* Modal */
         .modal {
             position: fixed;
@@ -899,10 +1006,10 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <div class="logo-icon">💰</div>
+                <div class="logo-icon">🐦</div>
                 <div class="logo-text">
                     <h1>CrowMRKT</h1>
-                    <p>Золотой доход с птицами</p>
+                    <p>Птичий рынок инвестиций</p>
                 </div>
             </div>
             <div class="user-profile">
@@ -914,27 +1021,34 @@
             </div>
         </header>
 
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-tab="marketplace">Рынок птиц</button>
+            <button class="nav-tab" data-tab="collection">Моя коллекция</button>
+            <button class="nav-tab" data-tab="leaderboard">Лидерборд</button>
+        </div>
+
         <!-- Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value" id="balance">100.00 Ꝑ</div>
-                <div class="stat-label">Золотой баланс</div>
-                <div class="stat-change positive" id="balanceChange">+0.00 Ꝑ/сек</div>
+                <div class="stat-value" id="balance">100.00 CR</div>
+                <div class="stat-label">Баланс кредитов</div>
+                <div class="stat-change positive" id="balanceChange">+0.00 CR/сек</div>
             </div>
             <div class="stat-card income">
-                <div class="stat-value" id="dailyIncome">0.00 Ꝑ</div>
+                <div class="stat-value" id="dailyIncome">0.00 CR</div>
                 <div class="stat-label">Пассивный доход</div>
                 <div class="stat-change" id="incomeChange">в сутки</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="birdsCount">0</div>
-                <div class="stat-label">Золотых птиц</div>
-                <div class="stat-change" id="portfolioValue">0.00 Ꝑ</div>
+                <div class="stat-label">Птиц в коллекции</div>
+                <div class="stat-change" id="portfolioValue">0.00 CR</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="totalEarned">0.00 Ꝑ</div>
-                <div class="stat-label">Всего золота</div>
-                <div class="stat-change positive" id="sessionEarned">+0.00 Ꝑ</div>
+                <div class="stat-value" id="totalEarned">0.00 CR</div>
+                <div class="stat-label">Всего заработано</div>
+                <div class="stat-change positive" id="sessionEarned">+0.00 CR</div>
             </div>
         </div>
 
@@ -946,7 +1060,7 @@
                     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
                         <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M21 21l-4.35-4.35M11 6a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5z"/>
                     </svg>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Искать золотых птиц...">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Искать птиц...">
                 </div>
 
                 <div class="filter-section">
@@ -992,9 +1106,9 @@
             </aside>
 
             <!-- Marketplace -->
-            <main class="marketplace">
+            <main class="marketplace" id="marketplaceTab">
                 <div class="marketplace-header">
-                    <h2 class="section-title" id="sectionTitle">Золотой рынок птиц</h2>
+                    <h2 class="section-title" id="sectionTitle">Рынок птиц</h2>
                     <div class="view-controls">
                         <button class="view-btn active" data-view="grid">Сетка</button>
                         <button class="view-btn" data-view="list">Список</button>
@@ -1003,6 +1117,37 @@
 
                 <div class="birds-grid" id="birdsGrid">
                     <!-- Birds will be loaded here -->
+                </div>
+            </main>
+
+            <!-- Collection -->
+            <main class="marketplace" id="collectionTab" style="display: none;">
+                <div class="marketplace-header">
+                    <h2 class="section-title">Моя коллекция</h2>
+                    <div class="view-controls">
+                        <button class="view-btn active" data-view="grid">Сетка</button>
+                        <button class="view-btn" data-view="list">Список</button>
+                    </div>
+                </div>
+
+                <div class="birds-grid" id="collectionGrid">
+                    <!-- Collection birds will be loaded here -->
+                </div>
+            </main>
+
+            <!-- Leaderboard -->
+            <main class="leaderboard" id="leaderboardTab" style="display: none;">
+                <div class="marketplace-header">
+                    <h2 class="section-title">Лидерборд</h2>
+                    <div class="view-controls">
+                        <button class="view-btn active" data-period="daily">За день</button>
+                        <button class="view-btn" data-period="weekly">За неделю</button>
+                        <button class="view-btn" data-period="alltime">За всё время</button>
+                    </div>
+                </div>
+
+                <div class="leaderboard-list" id="leaderboardList">
+                    <!-- Leaderboard will be loaded here -->
                 </div>
             </main>
         </div>
@@ -1023,11 +1168,11 @@
                 
                 <div class="modal-details">
                     <div class="detail-item">
-                        <div class="detail-value" style="color: var(--accent-primary);" id="modalBirdPrice">0 Ꝑ</div>
+                        <div class="detail-value" style="color: var(--accent-primary);" id="modalBirdPrice">0 CR</div>
                         <div class="detail-label">Цена покупки</div>
                     </div>
                     <div class="detail-item">
-                        <div class="detail-value" style="color: var(--success);" id="modalBirdIncome">0 Ꝑ/день</div>
+                        <div class="detail-value" style="color: var(--success);" id="modalBirdIncome">0 CR/день</div>
                         <div class="detail-label">Пассивный доход</div>
                     </div>
                     <div class="detail-item">
@@ -1043,7 +1188,7 @@
                 <div class="bird-actions">
                     <button class="btn btn-secondary" id="cancelPurchase">Отмена</button>
                     <button class="btn btn-primary" id="confirmPurchase">
-                        <span id="purchaseText">Купить за 0 Ꝑ</span>
+                        <span id="purchaseText">Купить за 0 CR</span>
                         <span class="loading" id="purchaseLoading" style="display: none;"></span>
                     </button>
                 </div>
@@ -1058,9 +1203,9 @@
         // ==================== CONFIGURATION ====================
         const BIRDS_DATA = [
             {
-                id: 1, name: 'Золотой грач', rarity: 'epic', price: 120.00, 
+                id: 1, name: 'Грач-инвестор', rarity: 'epic', price: 120.00, 
                 dailyIncome: 6.40, emoji: '💰', 
-                description: 'Величественная птица, несущая золотые яйца. Идеальное начало вашей золотой коллекции.',
+                description: 'Величественная птица, приносящая стабильный доход. Идеальное начало вашей коллекции.',
                 featured: true
             },
             {
@@ -1109,6 +1254,32 @@
                 dailyIncome: 45.0, emoji: '🏆', 
                 description: 'Величайшая птица в коллекции, источник неиссякаемого богатства.',
                 featured: true
+            },
+            {
+                id: 11, name: 'Аметистовый фламинго', rarity: 'rare', price: 95.00, 
+                dailyIncome: 4.20, emoji: '🦩', 
+                description: 'Элегантная птица, приносящая доход с изяществом и стилем.'
+            },
+            {
+                id: 12, name: 'Сапфировый зимородок', rarity: 'epic', price: 280.00, 
+                dailyIncome: 12.5, emoji: '🔵', 
+                description: 'Редкая птица, чей доход чист и прозрачен как сапфир.'
+            },
+            {
+                id: 13, name: 'Топазовый тукан', rarity: 'common', price: 22.00, 
+                dailyIncome: 0.85, emoji: '🦜', 
+                description: 'Яркая птица с большим клювом для сбора прибыли.'
+            },
+            {
+                id: 14, name: 'Опаловый пеликан', rarity: 'rare', price: 110.00, 
+                dailyIncome: 5.10, emoji: '🦢', 
+                description: 'Птица с вместительным клювом для хранения ваших доходов.'
+            },
+            {
+                id: 15, name: 'Изумрудный кетцаль', rarity: 'legendary', price: 1200.00, 
+                dailyIncome: 68.0, emoji: '💎', 
+                description: 'Священная птица древних цивилизаций, приносящая невероятное богатство.',
+                featured: true
             }
         ];
 
@@ -1121,7 +1292,8 @@
             sessionEarned: 0,
             filters: { search: '', rarity: 'all', sort: 'price-asc' },
             selectedBird: null,
-            lastUpdate: Date.now()
+            lastUpdate: Date.now(),
+            activeTab: 'marketplace'
         };
 
         // ==================== TELEGRAM INTEGRATION ====================
@@ -1143,8 +1315,9 @@
             } else {
                 // Demo mode
                 state.user = {
+                    id: 'demo_user_' + Date.now(),
                     first_name: 'Инвестор',
-                    username: 'golden_investor',
+                    username: 'bird_investor',
                     photo_url: ''
                 };
                 updateUserProfile(state.user);
@@ -1166,7 +1339,7 @@
                 avatar.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNmZmQ3MDAiIG9wYWNpdHk9IjAuMiIvPgo8Y2lyY2xlIGN4PSIyNCIgY3k9IjE4IiByPSI2IiBmaWxsPSIjZmZkNzAwIi8+CjxwYXRoIGQ9Ik0zNiAzNEMzNiAzMC42ODYzIDMwLjYyNjQgMjYgMjQgMjZDNy4zNzM2IDI2IDIgMzAuNjg2MyAyIDM0QzIgMzcuMzEzNyA3LjM3MzYgNDIgMjQgNDJDMzAuNjI2NCA0MiAzNiAzNy4zMTM3IDM2IDM0WiIgZmlsbD0iI2ZmZDcwMCIvPgo8L3N2Zz4K';
             }
             
-            name.textContent = user.first_name || 'Золотой инвестор';
+            name.textContent = user.first_name || 'Птичий инвестор';
             handle.textContent = user.username ? `@${user.username}` : 'CrowMRKT';
         }
 
@@ -1174,7 +1347,7 @@
         function loadUserData() {
             if (!state.user) return;
             
-            const storageKey = `crowmrkt_gold_${state.user.id || 'demo'}`;
+            const storageKey = `crowmrkt_${state.user.id || 'demo'}`;
             const saved = localStorage.getItem(storageKey);
             
             if (saved) {
@@ -1190,12 +1363,13 @@
             
             updateUI();
             startIncomeTimer();
+            saveUserDataToServer();
         }
 
         function saveUserData() {
             if (!state.user) return;
             
-            const storageKey = `crowmrkt_gold_${state.user.id || 'demo'}`;
+            const storageKey = `crowmrkt_${state.user.id || 'demo'}`;
             const data = {
                 balance: state.balance,
                 ownedBirds: state.ownedBirds,
@@ -1204,6 +1378,25 @@
             };
             
             localStorage.setItem(storageKey, JSON.stringify(data));
+            saveUserDataToServer();
+        }
+
+        // Simulate saving to server (in a real app, this would be an API call)
+        function saveUserDataToServer() {
+            if (!state.user) return;
+            
+            // In a real app, this would be an API call to save to users.json
+            console.log('Saving user data to server...', {
+                userId: state.user.id,
+                balance: state.balance,
+                ownedBirds: state.ownedBirds.length,
+                totalEarned: state.totalEarned
+            });
+            
+            // Simulate API call
+            setTimeout(() => {
+                console.log('User data saved successfully');
+            }, 500);
         }
 
         // ==================== GAME LOGIC ====================
@@ -1228,15 +1421,21 @@
             const perSecond = dailyIncome / 86400;
             
             // Update stats
-            document.getElementById('balance').textContent = state.balance.toFixed(2) + ' Ꝑ';
-            document.getElementById('dailyIncome').textContent = dailyIncome.toFixed(2) + ' Ꝑ';
+            document.getElementById('balance').textContent = state.balance.toFixed(2) + ' CR';
+            document.getElementById('dailyIncome').textContent = dailyIncome.toFixed(2) + ' CR';
             document.getElementById('birdsCount').textContent = state.ownedBirds.length;
-            document.getElementById('totalEarned').textContent = state.totalEarned.toFixed(2) + ' Ꝑ';
-            document.getElementById('portfolioValue').textContent = portfolioValue.toFixed(2) + ' Ꝑ';
-            document.getElementById('balanceChange').textContent = `+${perSecond.toFixed(4)} Ꝑ/сек`;
-            document.getElementById('sessionEarned').textContent = `+${state.sessionEarned.toFixed(2)} Ꝑ`;
+            document.getElementById('totalEarned').textContent = state.totalEarned.toFixed(2) + ' CR';
+            document.getElementById('portfolioValue').textContent = portfolioValue.toFixed(2) + ' CR';
+            document.getElementById('balanceChange').textContent = `+${perSecond.toFixed(4)} CR/сек`;
+            document.getElementById('sessionEarned').textContent = `+${state.sessionEarned.toFixed(2)} CR`;
             
-            renderBirdsGrid();
+            if (state.activeTab === 'marketplace') {
+                renderBirdsGrid();
+            } else if (state.activeTab === 'collection') {
+                renderCollectionGrid();
+            } else if (state.activeTab === 'leaderboard') {
+                renderLeaderboard();
+            }
         }
 
         function renderBirdsGrid() {
@@ -1286,11 +1485,11 @@
                             <div class="bird-description">${bird.description}</div>
                             <div class="bird-stats">
                                 <div class="bird-stat">
-                                    <div class="stat-value-small" style="color: var(--accent-primary);">${bird.price.toFixed(2)} Ꝑ</div>
+                                    <div class="stat-value-small" style="color: var(--accent-primary);">${bird.price.toFixed(2)} CR</div>
                                     <div class="stat-label-small">Инвестиция</div>
                                 </div>
                                 <div class="bird-stat">
-                                    <div class="stat-value-small" style="color: var(--success);">+${bird.dailyIncome.toFixed(2)} Ꝑ</div>
+                                    <div class="stat-value-small" style="color: var(--success);">+${bird.dailyIncome.toFixed(2)} CR</div>
                                     <div class="stat-label-small">В день</div>
                                 </div>
                             </div>
@@ -1301,7 +1500,7 @@
                                 `<button class="btn btn-primary ${!canAfford ? 'disabled' : ''}" 
                                  data-bird-id="${bird.id}" 
                                  ${!canAfford ? 'disabled' : ''}>
-                                    ${canAfford ? `Инвестировать ${bird.price.toFixed(2)} Ꝑ` : 'Недостаточно'}
+                                    ${canAfford ? `Инвестировать ${bird.price.toFixed(2)} CR` : 'Недостаточно'}
                                 </button>`
                             }
                         </div>
@@ -1318,6 +1517,85 @@
             });
         }
 
+        function renderCollectionGrid() {
+            const grid = document.getElementById('collectionGrid');
+            const ownedBirds = BIRDS_DATA.filter(bird => state.ownedBirds.includes(bird.id));
+            
+            if (ownedBirds.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px;">
+                        <div style="font-size: 80px; margin-bottom: 20px;">🐦</div>
+                        <h3 style="color: var(--text-muted); margin-bottom: 16px;">Коллекция пуста</h3>
+                        <p style="color: var(--text-muted);">Приобретите птиц на рынке, чтобы начать зарабатывать</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            grid.innerHTML = ownedBirds.map(bird => {
+                const rarityLabel = getRarityLabel(bird.rarity);
+                const rarityClass = bird.rarity;
+                
+                return `
+                    <div class="bird-card ${bird.featured ? 'featured' : ''}">
+                        <div class="bird-image floating">
+                            ${bird.emoji}
+                            <div class="bird-rarity ${rarityClass}">${rarityLabel}</div>
+                        </div>
+                        <div class="bird-info">
+                            <div class="bird-name">${bird.name}</div>
+                            <div class="bird-description">${bird.description}</div>
+                            <div class="bird-stats">
+                                <div class="bird-stat">
+                                    <div class="stat-value-small" style="color: var(--accent-primary);">${bird.price.toFixed(2)} CR</div>
+                                    <div class="stat-label-small">Стоимость</div>
+                                </div>
+                                <div class="bird-stat">
+                                    <div class="stat-value-small" style="color: var(--success);">+${bird.dailyIncome.toFixed(2)} CR</div>
+                                    <div class="stat-label-small">В день</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bird-actions">
+                            <button class="btn btn-secondary" disabled>✓ В коллекции</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboardList');
+            
+            // Generate mock leaderboard data
+            const leaderboardData = [
+                { id: state.user.id, name: state.user.first_name, username: state.user.username, photo_url: state.user.photo_url, totalEarned: state.totalEarned, rank: 1 },
+                { id: 'user2', name: 'Алексей', username: 'alex_bird', photo_url: '', totalEarned: 2450.75, rank: 2 },
+                { id: 'user3', name: 'Мария', username: 'maria_invest', photo_url: '', totalEarned: 1980.30, rank: 3 },
+                { id: 'user4', name: 'Дмитрий', username: 'dima_bird', photo_url: '', totalEarned: 1650.20, rank: 4 },
+                { id: 'user5', name: 'Елена', username: 'elena_collector', photo_url: '', totalEarned: 1420.80, rank: 5 },
+                { id: 'user6', name: 'Сергей', username: 'serg_bird', photo_url: '', totalEarned: 1250.50, rank: 6 },
+                { id: 'user7', name: 'Ольга', username: 'olga_invest', photo_url: '', totalEarned: 980.25, rank: 7 },
+                { id: 'user8', name: 'Иван', username: 'ivan_collector', photo_url: '', totalEarned: 750.40, rank: 8 },
+                { id: 'user9', name: 'Анна', username: 'anna_bird', photo_url: '', totalEarned: 520.10, rank: 9 },
+                { id: 'user10', name: 'Павел', username: 'pavel_invest', photo_url: '', totalEarned: 320.75, rank: 10 }
+            ];
+            
+            list.innerHTML = leaderboardData.map(user => `
+                <div class="leaderboard-item ${user.id === state.user.id ? 'current-user' : ''}">
+                    <div class="leaderboard-rank">#${user.rank}</div>
+                    <img class="leaderboard-avatar" src="${user.photo_url || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMjQiIGZpbGw9IiNmZmQ3MDAiIG9wYWNpdHk9IjAuMiIvPgo8Y2lyY2xlIGN4PSIyNCIgY3k9IjE4IiByPSI2IiBmaWxsPSIjZmZkNzAwIi8+CjxwYXRoIGQ9Ik0zNiAzNEMzNiAzMC42ODYzIDMwLjYyNjQgMjYgMjQgMjZDNy4zNzM2IDI2IDIgMzAuNjg2MyAyIDM0QzIgMzcuMzEzNyA3LjM3MzYgNDIgMjQgNDJDMzAuNjI2NCA0MiAzNiAzNy4zMTM3IDM2IDM0WiIgZmlsbD0iI2ZmZDcwMCIvPgo8L3N2Zz4K'}" alt="${user.name}">
+                    <div class="leaderboard-info">
+                        <div class="leaderboard-name">${user.name}</div>
+                        <div class="leaderboard-stats">
+                            <span>@${user.username}</span>
+                            <span>${user.totalEarned.toFixed(2)} CR</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function getRarityLabel(rarity) {
             const labels = {
                 common: 'Обычная',
@@ -1326,6 +1604,24 @@
                 legendary: 'Легендарная'
             };
             return labels[rarity] || rarity;
+        }
+
+        // ==================== TAB MANAGEMENT ====================
+        function switchTab(tabName) {
+            state.activeTab = tabName;
+            
+            // Update active tab button
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.tab === tabName);
+            });
+            
+            // Show/hide tab content
+            document.getElementById('marketplaceTab').style.display = tabName === 'marketplace' ? 'block' : 'none';
+            document.getElementById('collectionTab').style.display = tabName === 'collection' ? 'block' : 'none';
+            document.getElementById('leaderboardTab').style.display = tabName === 'leaderboard' ? 'block' : 'none';
+            
+            // Update UI for the active tab
+            updateUI();
         }
 
         // ==================== MODAL FUNCTIONS ====================
@@ -1341,11 +1637,11 @@
             document.getElementById('modalBirdImage').textContent = bird.emoji;
             document.getElementById('modalBirdName').textContent = bird.name;
             document.getElementById('modalBirdDescription').textContent = bird.description;
-            document.getElementById('modalBirdPrice').textContent = bird.price.toFixed(2) + ' Ꝑ';
-            document.getElementById('modalBirdIncome').textContent = '+' + bird.dailyIncome.toFixed(2) + ' Ꝑ/день';
+            document.getElementById('modalBirdPrice').textContent = bird.price.toFixed(2) + ' CR';
+            document.getElementById('modalBirdIncome').textContent = '+' + bird.dailyIncome.toFixed(2) + ' CR/день';
             document.getElementById('modalBirdRarity').textContent = getRarityLabel(bird.rarity);
             document.getElementById('modalROI').textContent = `${roi} дней`;
-            document.getElementById('purchaseText').textContent = `Инвестировать ${bird.price.toFixed(2)} Ꝑ`;
+            document.getElementById('purchaseText').textContent = `Инвестировать ${bird.price.toFixed(2)} CR`;
             
             modal.classList.add('active');
         }
@@ -1373,7 +1669,7 @@
             await new Promise(resolve => setTimeout(resolve, 1500));
             
             if (state.balance < bird.price) {
-                showToast('❌ Недостаточно золота для инвестиции!', 'error');
+                showToast('❌ Недостаточно кредитов для инвестиции!', 'error');
                 purchaseText.style.display = 'inline-block';
                 purchaseLoading.style.display = 'none';
                 purchaseBtn.disabled = false;
@@ -1381,7 +1677,7 @@
             }
             
             if (state.ownedBirds.includes(bird.id)) {
-                showToast('⚠️ Эта птица уже в вашей золотой коллекции!', 'error');
+                showToast('⚠️ Эта птица уже в вашей коллекции!', 'error');
                 purchaseText.style.display = 'inline-block';
                 purchaseLoading.style.display = 'none';
                 purchaseBtn.disabled = false;
@@ -1402,7 +1698,7 @@
             updateUI();
             closePurchaseModal();
             
-            showToast(`🎉 Успех! Вы приобрели ${bird.name}! +${bird.dailyIncome.toFixed(2)} Ꝑ/день`, 'success');
+            showToast(`🎉 Успех! Вы приобрели ${bird.name}! +${bird.dailyIncome.toFixed(2)} CR/день`, 'success');
             
             // Restore button
             purchaseText.style.display = 'inline-block';
@@ -1488,6 +1784,13 @@
                 });
             });
             
+            // Tab controls
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    switchTab(e.target.dataset.tab);
+                });
+            });
+            
             // Modal controls
             document.getElementById('closeModal').addEventListener('click', closePurchaseModal);
             document.getElementById('cancelPurchase').addEventListener('click', closePurchaseModal);
@@ -1512,12 +1815,12 @@
         function initApp() {
             initTelegram();
             initEventListeners();
-            renderBirdsGrid();
+            switchTab('marketplace');
             
             // Auto-save on page unload
             window.addEventListener('beforeunload', saveUserData);
             
-            showToast('🌟 Добро пожаловать в мир золотых инвестиций!', 'success');
+            showToast('🌟 Добро пожаловать в мир птичьих инвестиций!', 'success');
         }
 
         // Start the app
@@ -1525,4 +1828,3 @@
     </script>
 </body>
 </html>
-
