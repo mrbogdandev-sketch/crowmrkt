@@ -1,147 +1,1156 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
-<title>CrowMRKT — dynamic layout</title>
-<style>
-:root{
-  --bg:#000;
-  --panel:#0b0b0b;
-  --muted:#9a9a9a;
-  --accent:#FFD500;
-  --radius:14px;
-  --ease:260ms cubic-bezier(.2,.9,.2,1);
-  font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
-}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;background:var(--bg);color:#eaeaea;-webkit-font-smoothing:antialiased;font-size:18px;display:flex;justify-content:center;align-items:flex-start;padding-top:20px}
-.shell{width:100%;max-width:480px;margin:0 auto;padding:16px;display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
-.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;font-size:1.2em}
-.info{display:flex;flex-wrap:wrap;gap:12px;align-items:center;flex:1;overflow:hidden}
-.coins{display:flex;align-items:center;gap:10px;padding:12px 16px;border-radius:14px;background:var(--panel);border:1px solid #141414;flex-shrink:0;font-size:1.2em;min-width:0;overflow:hidden}
-.coins strong{color:var(--accent);font-weight:900;font-size:1.3em}
-.income{color:var(--muted);font-size:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.btn{background:var(--accent);border:none;padding:14px 20px;border-radius:14px;color:#000;font-weight:900;cursor:pointer;transition:transform var(--ease);min-height:50px;flex-shrink:0;font-size:1em}
-.btn:active{transform:scale(.98)}
-.btn--ghost{background:transparent;border:1px solid #222;color:var(--muted);}
-.panel{background:var(--panel);padding:16px;border-radius:var(--radius);border:1px solid #151515;min-width:0;overflow:hidden}
-h2{margin:0 0 12px 0;font-size:1.3em}
-.shop-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr))}
-.card{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:14px;background:#050505;border:1px solid #151515;min-width:0;font-size:1.05em}
-.row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
-.bird{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
-.emoji{font-size:32px;flex-shrink:0}
-.bname{font-weight:700;font-size:1.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
-.muted{color:var(--muted);font-size:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.price{font-weight:900;color:var(--accent);white-space:nowrap}
-.inventory{display:flex;flex-direction:column;gap:12px}
-.inv-item{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:14px;border-radius:14px;background:#050505;border:1px solid #151515;min-width:0;font-size:1em}
-.inv-sub{color:var(--muted);font-size:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.float{position:fixed;right:18px;top:18px;padding:12px 16px;border-radius:999px;background:#0c0c0c;border:1px solid #141414;color:var(--accent);font-weight:900;opacity:0;transform:translateY(-6px) scale(.98);transition:transform 420ms cubic-bezier(.2,.9,.2,1),opacity 420ms}
-.float.show{opacity:1;transform:translateY(-26px) scale(1)}
-#pcWarning{display:none;text-align:center;color:var(--accent);font-weight:900;font-size:28px;line-height:1.5;padding-top:40px}
-#pcWarning .emoji{font-size:80px;margin-bottom:20px;display:block}
-#mainUI, .bnav{display:none}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrowMRKT - Игра про птиц</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #FFD700;
+            --secondary: #8B4513;
+            --accent: #FF6B00;
+            --dark: #121212;
+            --darker: #0A0A0A;
+            --light: #F5F5F5;
+            --gray: #2A2A2A;
+            --success: #4CAF50;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Сообщение для ПК */
+        #pc-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            animation: pulse 2s infinite;
+        }
+
+        .message-content h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .message-content p {
+            font-size: 20px;
+            line-height: 1.5;
+        }
+
+        .bird-emoji {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+            animation: fly 3s infinite ease-in-out;
+        }
+
+        /* Основной контейнер игры */
+        #game-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-bottom: 100px;
+            opacity: 0;
+            animation: fadeIn 1s forwards 0.5s;
+        }
+
+        /* Верхний блок */
+        #header {
+            background: rgba(18, 18, 18, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 2px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .balance-section {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .balance, .income {
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .balance {
+            color: var(--light);
+        }
+
+        .income {
+            color: var(--primary);
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-pic {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--light);
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Контейнер для птиц */
+        #birds-container {
+            flex: 1;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            overflow-y: auto;
+        }
+
+        .bird-card {
+            background: linear-gradient(135deg, rgba(42, 42, 42, 0.8) 0%, rgba(18, 18, 18, 0.9) 100%);
+            border-radius: 15px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bird-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+        }
+
+        .bird-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+
+        .bird-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+            transition: all 0.3s ease;
+        }
+
+        .bird-card:hover .bird-icon {
+            transform: scale(1.1);
+        }
+
+        .bird-name {
+            font-size: 18px;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .bird-income {
+            font-size: 16px;
+            color: var(--primary);
+            margin-bottom: 12px;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+
+        .bird-count {
+            font-size: 16px;
+            color: #aaa;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        /* Нижняя панель с кнопками */
+        #bottom-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 2px solid var(--primary);
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 90;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: var(--dark);
+            border: none;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            min-width: 110px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+        }
+
+        .action-btn i {
+            font-size: 20px;
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(42, 42, 42, 0.95) 0%, rgba(18, 18, 18, 0.98) 100%);
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .modal-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--primary);
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* Кастомный скроллбар */
+        .modal-body::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-body::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .modal-body::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        .shop-item, .inventory-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .shop-item:hover, .inventory-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 215, 0, 0.3);
+            transform: translateX(5px);
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .item-price {
+            font-size: 16px;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .item-income {
+            font-size: 14px;
+            color: var(--accent);
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: var(--dark);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 18px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+            white-space: nowrap;
+        }
+
+        .buy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .buy-btn:disabled {
+            background: var(--gray);
+            color: #777;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* Анимации */
+        @keyframes fly {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes coinAnimation {
+            0% { transform: scale(1) translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(2) translateY(-80px) rotate(180deg); opacity: 0; }
+        }
+
+        .coin-animation {
+            position: absolute;
+            font-size: 24px;
+            color: var(--primary);
+            animation: coinAnimation 1.5s forwards;
+            pointer-events: none;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes purchaseAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .purchase-animation {
+            animation: purchaseAnimation 0.5s;
+        }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 300;
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Адаптивность для телефонов */
+        @media (min-width: 768px) {
+            #game-container {
+                display: none;
+            }
+            
+            #pc-message {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .balance, .income {
+                font-size: 18px;
+            }
+            
+            .bird-card {
+                padding: 15px 10px;
+            }
+            
+            .bird-name {
+                font-size: 16px;
+            }
+            
+            .action-btn {
+                padding: 14px 16px;
+                font-size: 16px;
+                min-width: 90px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .profile-name {
+                max-width: 80px;
+                font-size: 14px;
+            }
+            
+            .shop-item, .inventory-item {
+                padding: 15px;
+                flex-direction: column;
+                gap: 12px;
+                align-items: flex-start;
+            }
+            
+            .buy-btn {
+                align-self: flex-end;
+            }
+        }
+
+        /* Прогресс-бар дохода */
+        .income-progress {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .income-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            width: 0%;
+            transition: width 1s linear;
+        }
+        
+        /* Фон с узором */
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.05) 2px, transparent 0),
+                radial-gradient(circle at 75% 75%, rgba(255, 107, 0, 0.05) 2px, transparent 0);
+            background-size: 50px 50px;
+            z-index: -1;
+        }
+        
+        /* Статистика */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            font-size: 12px;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+    </style>
 </head>
 <body>
-<div id="pcWarning">
-  <span class="emoji">🐦</span>
-  Для игры откройте приложение на телефоне 📱
-</div>
-<div class="shell" id="mainUI">
-<div class="top">
-  <div class="info">
-    <div class="coins">🪙 <strong id="coins">0</strong> <span class="income">· <span id="income">0.00</span>/c</span></div>
-  </div>
-  <div class="primary">
-    <button id="collect" class="btn">Собрать</button>
-  </div>
-</div>
-<main class="panel" id="shopPanel">
-  <h2>Магазин</h2>
-  <div class="shop-grid" id="shop"></div>
-</main>
-<aside class="panel" id="side">
-  <h2>Инвентарь</h2>
-  <div class="inventory" id="inventory"></div>
-  <div style="margin-top:12px;display:flex;justify-content:space-between" class="muted">
-    <div>Доход/сек</div>
-    <div id="totalIncome">0.00</div>
-  </div>
-</aside>
-</div>
-<div class="bnav">
-  <button id="nav-shop" class="btn">Магазин</button>
-  <button id="nav-inv" class="btn btn--ghost">Инвентарь</button>
-  <button id="nav-collect" class="btn">Собрать</button>
-</div>
-<div id="float" class="float">+0</div>
-<script>
-const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-const SHOP=[
-  {id:'sparrow',name:'Воробей',emoji:'🐦',base:5,income:0.05},
-  {id:'pigeon',name:'Голубь',emoji:'🕊️',base:30,income:0.35},
-  {id:'chick',name:'Цыплёнок',emoji:'🐤',base:80,income:1},
-  {id:'magpie',name:'Сорока',emoji:'🪶',base:220,income:3.2},
-  {id:'owl',name:'Сова',emoji:'🦉',base:600,income:9},
-  {id:'hawk',name:'Ястреб',emoji:'🦅',base:1600,income:28},
-  {id:'rooster',name:'Петух',emoji:'🐓',base:4800,income:85},
-  {id:'parrot',name:'Попугай',emoji:'🦜',base:13500,income:250},
-  {id:'duck',name:'Утёнок',emoji:'🦆',base:42000,income:760},
-  {id:'mythic',name:'Легенда',emoji:'✨',base:125000,income:2300}
-];
-const KEY='crowmrkt_dynamic';
-let state={coins:200,birds:{},last:Date.now()};
-const $=id=>document.getElementById(id);
-const fmt=n=>Math.floor(n).toLocaleString('ru-RU');
-const fmtF=n=>(Math.floor(n*100)/100).toLocaleString('ru-RU');
-function load(){try{const raw=localStorage.getItem(KEY);if(raw)state=JSON.parse(raw);}catch(e){}}
-function save(){state.last=Date.now();localStorage.setItem(KEY,JSON.stringify(state));}
-function priceFor(it,owned){owned=owned||(state.birds[it.id]||0);return Math.ceil(it.base*Math.pow(1.12,owned));}
-function totalIncome(){return SHOP.reduce((s,it)=>s+(state.birds[it.id]||0)*it.income,0)}
-function animateCoin(amount){const f=$('float');f.textContent='+'+fmt(amount);f.classList.add('show');clearTimeout(f._t);f._t=setTimeout(()=>f.classList.remove('show'),900);}
-function buy(id){const it=SHOP.find(s=>s.id===id);const price=priceFor(it);if(state.coins<price){animateCoin('Нет монет'); return;}state.coins-=price;state.birds[id]=(state.birds[id]||0)+1;save(); renderShop(); renderInv(); updateTop(); animateCoin(it.income);}
-function updateTop(){$('coins').textContent=fmt(state.coins);$('income').textContent=fmtF(totalIncome());$('totalIncome').textContent=fmtF(totalIncome());}
-function collect(){save(); animateCoin('✔');}
-function applyOffline(){const now=Date.now();const secs=Math.floor((now-state.last)/1000);if(secs>0){const earned=Math.floor(totalIncome()*secs);if(earned>0){state.coins+=earned; animateCoin(earned);}}}
-function renderShop(){
-  const out=$('shop'); out.innerHTML=''; SHOP.forEach(it=>{
-    const owned=state.birds[it.id]||0;
-    const price=priceFor(it);
-    const card=document.createElement('div');
-    card.className='card';
-    card.innerHTML=`<div class="row"><div class="bird"><div class="emoji">${it.emoji}</div><div><div class="bname">${it.name}</div><div class="muted">${owned} шт · ${it.income}/c</div></div></div><div class="controls"><div class="price">${fmt(price)}</div><button class="btn buy" data-id="${it.id}">Купить</button></div></div>`;
-    out.appendChild(card);
-  });
-  out.querySelectorAll('button.buy').forEach(b=>b.onclick=()=>buy(b.dataset.id));
-}
-function renderInv(){
-  const inv=$('inventory');
-  inv.innerHTML='';
-  SHOP.filter(it=>state.birds[it.id]>0).forEach(it=>{
-    const cnt=state.birds[it.id];
-    const el=document.createElement('div');
-    el.className='inv-item';
-    el.innerHTML=`<div style="display:flex;gap:12px;align-items:center;min-width:0"><div class="emoji">${it.emoji}</div><div style="min-width:0;overflow:hidden"><div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.name}</div><div class="inv-sub">${fmtF(it.income*cnt)}/c</div></div></div><div class="inv-sub">×${cnt}</div>`;
-    inv.appendChild(el);
-  });
-}
-(function(){
-  if(!isMobile){
-    $('pcWarning').style.display='block';
-  } else {
-    $('mainUI').style.display='grid';
-    load(); applyOffline(); save(); renderShop(); renderInv(); updateTop();
-    setInterval(()=>{state.coins+=totalIncome();updateTop();save();},1000);
-    $('collect').onclick=collect;
-    document.getElementById('nav-shop').onclick=()=>{document.getElementById('shopPanel').style.display='block';document.getElementById('side').style.display='none';};
-    document.getElementById('nav-inv').onclick=()=>{document.getElementById('shopPanel').style.display='none';document.getElementById('side').style.display='block';};
-    document.getElementById('nav-collect').onclick=collect;
-  }
-})();
-</script>
+    <!-- Фон с узором -->
+    <div class="background-pattern"></div>
+
+    <!-- Сообщение для ПК -->
+    <div id="pc-message">
+        <div class="message-content">
+            <span class="bird-emoji">🦅</span>
+            <h1>CrowMRKT</h1>
+            <p>Для игры откройте приложение на телефоне 📱</p>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Уведомление</span>
+    </div>
+
+    <!-- Основной контейнер игры -->
+    <div id="game-container">
+        <!-- Верхний блок -->
+        <div id="header">
+            <div class="balance-section">
+                <div class="balance"><i class="fas fa-coins"></i> Баланс: <span id="balance">0</span> 🪙</div>
+                <div class="income"><i class="fas fa-chart-line"></i> Доход: <span id="income">0</span>/сек</div>
+                <div class="income-progress">
+                    <div class="income-progress-bar" id="income-progress-bar"></div>
+                </div>
+            </div>
+            <div class="profile-section">
+                <div class="profile-name" id="profile-name">Загрузка...</div>
+                <div class="profile-pic" id="profile-pic">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-value" id="total-birds">0</div>
+                <div class="stat-label">Всего птиц</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="total-income">0/сек</div>
+                <div class="stat-label">Общий доход</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="play-time">0ч</div>
+                <div class="stat-label">Время игры</div>
+            </div>
+        </div>
+
+        <!-- Контейнер для птиц -->
+        <div id="birds-container">
+            <!-- Карточки птиц будут генерироваться динамически -->
+        </div>
+
+        <!-- Нижняя панель с кнопками -->
+        <div id="bottom-panel">
+            <button class="action-btn" id="collect-btn">
+                <i class="fas fa-hand-holding-usd"></i> Собрать
+            </button>
+            <button class="action-btn" id="shop-btn">
+                <i class="fas fa-store"></i> Магазин
+            </button>
+            <button class="action-btn" id="inventory-btn">
+                <i class="fas fa-box-open"></i> Инвентарь
+            </button>
+        </div>
+    </div>
+
+    <!-- Модальное окно магазина -->
+    <div id="shop-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-store"></i> Магазин птиц</div>
+                <button class="close-btn" id="close-shop">&times;</button>
+            </div>
+            <div class="modal-body" id="shop-items">
+                <!-- Элементы магазина будут генерироваться динамически -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно инвентаря -->
+    <div id="inventory-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-box-open"></i> Ваши птицы</div>
+                <button class="close-btn" id="close-inventory">&times;</button>
+            </div>
+            <div class="modal-body" id="inventory-items">
+                <!-- Элементы инвентаря будут генерироваться динамически -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Игровые данные
+        const gameData = {
+            balance: 100,
+            income: 0,
+            lastPlayTime: Date.now(),
+            totalPlayTime: 0,
+            totalBirds: 0,
+            birds: [
+                { id: 1, name: "Воробей", icon: "🐦", baseIncome: 1, price: 10, count: 0 },
+                { id: 2, name: "Голубь", icon: "🕊️", baseIncome: 5, price: 50, count: 0 },
+                { id: 3, name: "Ворон", icon: "🐦‍⬛", baseIncome: 10, price: 100, count: 0 },
+                { id: 4, name: "Орёл", icon: "🦅", baseIncome: 50, price: 500, count: 0 },
+                { id: 5, name: "Пингвин", icon: "🐧", baseIncome: 100, price: 1000, count: 0 },
+                { id: 6, name: "Фламинго", icon: "🦩", baseIncome: 500, price: 5000, count: 0 },
+                { id: 7, name: "Павлин", icon: "🦚", baseIncome: 1000, price: 10000, count: 0 },
+                { id: 8, name: "Феникс", icon: "🔥", baseIncome: 5000, price: 50000, count: 0 }
+            ],
+            profile: {
+                name: "Игрок",
+                photoUrl: null
+            }
+        };
+
+        // Telegram Web App
+        let tg = null;
+        
+        // Инициализация Telegram Web App
+        function initTelegramWebApp() {
+            // Проверяем, запущено ли приложение в Telegram
+            if (window.Telegram && window.Telegram.WebApp) {
+                tg = window.Telegram.WebApp;
+                
+                // Расширяем приложение на весь экран
+                tg.expand();
+                
+                // Получаем данные пользователя
+                const user = tg.initDataUnsafe?.user;
+                
+                if (user) {
+                    // Обновляем имя пользователя
+                    if (user.first_name) {
+                        gameData.profile.name = user.first_name;
+                        if (user.last_name) {
+                            gameData.profile.name += ' ' + user.last_name;
+                        }
+                    } else if (user.username) {
+                        gameData.profile.name = user.username;
+                    }
+                    
+                    // Обновляем фото профиля
+                    if (user.photo_url) {
+                        gameData.profile.photoUrl = user.photo_url;
+                    }
+                }
+                
+                // Сохраняем обновленные данные профиля
+                saveGameData();
+                updateProfile();
+            } else {
+                // Если не в Telegram, используем тестовые данные
+                console.log("Приложение запущено вне Telegram");
+                gameData.profile.name = "Тестовый Игрок";
+                updateProfile();
+            }
+        }
+
+        // Загрузка данных из localStorage
+        function loadGameData() {
+            const savedData = localStorage.getItem('crowMRKTData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                gameData.balance = parsedData.balance || 0;
+                gameData.income = parsedData.income || 0;
+                gameData.lastPlayTime = parsedData.lastPlayTime || Date.now();
+                gameData.totalPlayTime = parsedData.totalPlayTime || 0;
+                gameData.totalBirds = parsedData.totalBirds || 0;
+                
+                // Обновляем данные птиц
+                if (parsedData.birds) {
+                    for (let i = 0; i < gameData.birds.length; i++) {
+                        if (parsedData.birds[i]) {
+                            gameData.birds[i].count = parsedData.birds[i].count || 0;
+                        }
+                    }
+                }
+                
+                // Обновляем профиль
+                if (parsedData.profile) {
+                    gameData.profile = parsedData.profile;
+                }
+                
+                // Начисляем доход за время отсутствия
+                const currentTime = Date.now();
+                const timeDiff = (currentTime - gameData.lastPlayTime) / 1000; // в секундах
+                const offlineIncome = Math.floor(timeDiff * gameData.income);
+                
+                if (offlineIncome > 0) {
+                    gameData.balance += offlineIncome;
+                    showNotification(`Получено ${offlineIncome} 🪙 за время отсутствия!`);
+                }
+                
+                // Обновляем общее время игры
+                gameData.totalPlayTime += Math.floor(timeDiff);
+            }
+            
+            // Обновляем профиль в интерфейсе
+            updateProfile();
+        }
+
+        // Обновление профиля
+        function updateProfile() {
+            document.getElementById('profile-name').textContent = gameData.profile.name;
+            
+            const profilePic = document.getElementById('profile-pic');
+            if (gameData.profile.photoUrl) {
+                profilePic.innerHTML = `<img src="${gameData.profile.photoUrl}" alt="Profile">`;
+            } else {
+                profilePic.innerHTML = '<i class="fas fa-user"></i>';
+            }
+        }
+
+        // Сохранение данных в localStorage
+        function saveGameData() {
+            gameData.lastPlayTime = Date.now();
+            localStorage.setItem('crowMRKTData', JSON.stringify(gameData));
+        }
+
+        // Показ уведомления
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Обновление интерфейса
+        function updateUI() {
+            // Обновляем баланс и доход
+            document.getElementById('balance').textContent = gameData.balance.toLocaleString();
+            document.getElementById('income').textContent = gameData.income.toLocaleString();
+            
+            // Обновляем статистику
+            updateStats();
+            
+            // Обновляем карточки птиц
+            const birdsContainer = document.getElementById('birds-container');
+            birdsContainer.innerHTML = '';
+            
+            gameData.birds.forEach(bird => {
+                if (bird.count > 0) {
+                    const birdCard = document.createElement('div');
+                    birdCard.className = 'bird-card';
+                    birdCard.innerHTML = `
+                        <div class="bird-icon">${bird.icon}</div>
+                        <div class="bird-name">${bird.name}</div>
+                        <div class="bird-income">+${bird.baseIncome}/сек</div>
+                        <div class="bird-count">${bird.count} шт.</div>
+                    `;
+                    birdsContainer.appendChild(birdCard);
+                }
+            });
+            
+            // Если нет птиц, показываем сообщение
+            if (birdsContainer.children.length === 0) {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #888;">
+                        <i class="fas fa-dove" style="font-size: 50px; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <div style="font-size: 18px;">Купите первую птицу в магазине!</div>
+                    </div>
+                `;
+                emptyMessage.style.gridColumn = '1 / -1';
+                birdsContainer.appendChild(emptyMessage);
+            }
+            
+            // Обновляем магазин
+            updateShop();
+            
+            // Обновляем инвентарь
+            updateInventory();
+        }
+
+        // Обновление статистики
+        function updateStats() {
+            // Считаем общее количество птиц
+            const totalBirds = gameData.birds.reduce((sum, bird) => sum + bird.count, 0);
+            gameData.totalBirds = totalBirds;
+            
+            // Обновляем отображение статистики
+            document.getElementById('total-birds').textContent = totalBirds;
+            document.getElementById('total-income').textContent = `${gameData.income}/сек`;
+            
+            // Форматируем время игры
+            const hours = Math.floor(gameData.totalPlayTime / 3600);
+            const minutes = Math.floor((gameData.totalPlayTime % 3600) / 60);
+            document.getElementById('play-time').textContent = `${hours}ч ${minutes}м`;
+        }
+
+        // Обновление магазина
+        function updateShop() {
+            const shopItems = document.getElementById('shop-items');
+            shopItems.innerHTML = '';
+            
+            gameData.birds.forEach(bird => {
+                const canAfford = gameData.balance >= bird.price;
+                const shopItem = document.createElement('div');
+                shopItem.className = 'shop-item';
+                shopItem.innerHTML = `
+                    <div class="item-info">
+                        <div class="item-name">${bird.icon} ${bird.name}</div>
+                        <div class="item-price">Цена: ${bird.price} 🪙</div>
+                        <div class="item-income">Доход: +${bird.baseIncome}/сек</div>
+                    </div>
+                    <button class="buy-btn" data-id="${bird.id}" ${canAfford ? '' : 'disabled'}>
+                        ${canAfford ? 'Купить' : 'Недостаточно'}
+                    </button>
+                `;
+                shopItems.appendChild(shopItem);
+            });
+            
+            // Добавляем обработчики событий для кнопок покупки
+            document.querySelectorAll('.buy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const birdId = parseInt(this.getAttribute('data-id'));
+                    buyBird(birdId);
+                });
+            });
+        }
+
+        // Обновление инвентаря
+        function updateInventory() {
+            const inventoryItems = document.getElementById('inventory-items');
+            inventoryItems.innerHTML = '';
+            
+            let hasBirds = false;
+            
+            gameData.birds.forEach(bird => {
+                if (bird.count > 0) {
+                    hasBirds = true;
+                    const inventoryItem = document.createElement('div');
+                    inventoryItem.className = 'inventory-item';
+                    inventoryItem.innerHTML = `
+                        <div class="item-info">
+                            <div class="item-name">${bird.icon} ${bird.name}</div>
+                            <div class="item-count">Количество: ${bird.count}</div>
+                            <div class="item-income">Общий доход: +${bird.baseIncome * bird.count}/сек</div>
+                        </div>
+                    `;
+                    inventoryItems.appendChild(inventoryItem);
+                }
+            });
+            
+            // Если нет птиц, показываем сообщение
+            if (!hasBirds) {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #888;">
+                        <i class="fas fa-box" style="font-size: 50px; margin-bottom: 20px; opacity: 0.5;"></i>
+                        <div style="font-size: 18px;">У вас пока нет птиц. Посетите магазин!</div>
+                    </div>
+                `;
+                inventoryItems.appendChild(emptyMessage);
+            }
+        }
+
+        // Покупка птицы
+        function buyBird(birdId) {
+            const bird = gameData.birds.find(b => b.id === birdId);
+            
+            if (gameData.balance >= bird.price) {
+                // Анимация покупки
+                const buyButton = document.querySelector(`.buy-btn[data-id="${birdId}"]`);
+                buyButton.classList.add('purchase-animation');
+                setTimeout(() => {
+                    buyButton.classList.remove('purchase-animation');
+                }, 500);
+                
+                // Обновляем данные
+                gameData.balance -= bird.price;
+                bird.count++;
+                gameData.income += bird.baseIncome;
+                
+                // Показываем уведомление
+                showNotification(`Вы купили ${bird.icon} ${bird.name}!`);
+                
+                // Сохраняем и обновляем интерфейс
+                saveGameData();
+                updateUI();
+            } else {
+                // Анимация недостатка средств
+                const balanceElement = document.getElementById('balance');
+                balanceElement.classList.add('purchase-animation');
+                setTimeout(() => {
+                    balanceElement.classList.remove('purchase-animation');
+                }, 500);
+                
+                showNotification('Недостаточно средств!');
+            }
+        }
+
+        // Сбор дохода
+        function collectIncome() {
+            if (gameData.income > 0) {
+                // Анимация сбора монет
+                const collectBtn = document.getElementById('collect-btn');
+                const rect = collectBtn.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+                
+                for (let i = 0; i < 10; i++) {
+                    createCoinAnimation(x, y);
+                }
+                
+                // Обновляем баланс
+                gameData.balance += gameData.income;
+                saveGameData();
+                updateUI();
+                
+                // Показываем уведомление
+                showNotification(`Собрано ${gameData.income} 🪙!`);
+            } else {
+                showNotification('Пока нечего собирать!');
+            }
+        }
+
+        // Создание анимации монеты
+        function createCoinAnimation(x, y) {
+            const coin = document.createElement('div');
+            coin.className = 'coin-animation';
+            coin.textContent = '🪙';
+            coin.style.left = `${x}px`;
+            coin.style.top = `${y}px`;
+            
+            // Случайное смещение
+            const offsetX = (Math.random() - 0.5) * 100;
+            coin.style.setProperty('--offset-x', `${offsetX}px`);
+            
+            document.body.appendChild(coin);
+            
+            setTimeout(() => {
+                if (coin.parentNode) {
+                    document.body.removeChild(coin);
+                }
+            }, 1500);
+        }
+
+        // Автоматический сбор дохода (визуальный прогресс)
+        function startIncomeProgress() {
+            const progressBar = document.getElementById('income-progress-bar');
+            let progress = 0;
+            
+            const interval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    progress = 0;
+                    if (gameData.income > 0) {
+                        createCoinAnimation(
+                            Math.random() * window.innerWidth,
+                            window.innerHeight
+                        );
+                    }
+                }
+            }, 1000);
+        }
+
+        // Обновление времени игры
+        function updatePlayTime() {
+            setInterval(() => {
+                gameData.totalPlayTime += 1;
+                updateStats();
+                saveGameData();
+            }, 1000);
+        }
+
+        // Инициализация игры
+        function initGame() {
+            // Инициализируем Telegram Web App
+            initTelegramWebApp();
+            
+            // Загружаем данные
+            loadGameData();
+            
+            // Обновляем интерфейс
+            updateUI();
+            
+            // Запускаем прогресс-бар дохода
+            startIncomeProgress();
+            
+            // Запускаем отсчет времени игры
+            updatePlayTime();
+            
+            // Обработчики событий для кнопок
+            document.getElementById('collect-btn').addEventListener('click', collectIncome);
+            
+            document.getElementById('shop-btn').addEventListener('click', function() {
+                document.getElementById('shop-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('inventory-btn').addEventListener('click', function() {
+                document.getElementById('inventory-modal').style.display = 'flex';
+            });
+            
+            document.getElementById('close-shop').addEventListener('click', function() {
+                document.getElementById('shop-modal').style.display = 'none';
+            });
+            
+            document.getElementById('close-inventory').addEventListener('click', function() {
+                document.getElementById('inventory-modal').style.display = 'none';
+            });
+            
+            // Закрытие модальных окон при клике вне их
+            window.addEventListener('click', function(event) {
+                const shopModal = document.getElementById('shop-modal');
+                const inventoryModal = document.getElementById('inventory-modal');
+                
+                if (event.target === shopModal) {
+                    shopModal.style.display = 'none';
+                }
+                
+                if (event.target === inventoryModal) {
+                    inventoryModal.style.display = 'none';
+                }
+            });
+            
+            // Автосохранение каждые 10 секунд
+            setInterval(saveGameData, 10000);
+        }
+
+        // Запуск игры при загрузке страницы
+        window.addEventListener('load', initGame);
+    </script>
 </body>
 </html>
