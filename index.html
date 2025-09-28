@@ -15,34 +15,34 @@
   font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;background:var(--bg);color:#eaeaea;-webkit-font-smoothing:antialiased;font-size:16px;display:flex;justify-content:center;align-items:center;}
-.shell{max-width:1200px;margin:12px auto;padding:12px;display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
-.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
-.info{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.coins{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:12px;background:var(--panel);border:1px solid #141414;flex-shrink:0}
-.coins strong{color:var(--accent);font-weight:800;font-size:15px}
-.income{color:var(--muted);font-size:13px}
-.btn{background:var(--accent);border:none;padding:10px 16px;border-radius:12px;color:#000;font-weight:800;cursor:pointer;transition:transform var(--ease);min-height:44px;flex-shrink:0}
+html,body{height:100%;margin:0;background:var(--bg);color:#eaeaea;-webkit-font-smoothing:antialiased;font-size:18px;display:flex;justify-content:center;align-items:center;}
+.shell{max-width:1200px;margin:12px auto;padding:16px;display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;font-size:1.2em}
+.info{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.coins{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:14px;background:var(--panel);border:1px solid #141414;flex-shrink:0;font-size:1.1em}
+.coins strong{color:var(--accent);font-weight:900;font-size:1.2em}
+.income{color:var(--muted);font-size:0.95em}
+.btn{background:var(--accent);border:none;padding:14px 20px;border-radius:14px;color:#000;font-weight:900;cursor:pointer;transition:transform var(--ease);min-height:50px;flex-shrink:0;font-size:1em}
 .btn:active{transform:scale(.98)}
 .btn--ghost{background:transparent;border:1px solid #222;color:var(--muted);}
-.panel{background:var(--panel);padding:14px;border-radius:var(--radius);border:1px solid #151515;min-width:0;overflow:hidden}
-h2{margin:0 0 10px 0;font-size:16px}
-.shop-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr))}
-.card{display:flex;flex-direction:column;gap:8px;padding:12px;border-radius:12px;background:#050505;border:1px solid #151515;min-width:0}
-.row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
-.bird{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.emoji{font-size:22px;flex-shrink:0}
-.bname{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
-.muted{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.controls{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.price{font-weight:800;color:var(--accent);white-space:nowrap}
-.inventory{display:flex;flex-direction:column;gap:8px}
-.inv-item{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:10px;border-radius:10px;background:#050505;border:1px solid #151515;min-width:0}
-.inv-sub{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.float{position:fixed;right:18px;top:18px;padding:8px 12px;border-radius:999px;background:#0c0c0c;border:1px solid #141414;color:var(--accent);font-weight:800;opacity:0;transform:translateY(-6px) scale(.98);transition:transform 420ms cubic-bezier(.2,.9,.2,1),opacity 420ms}
+.panel{background:var(--panel);padding:16px;border-radius:var(--radius);border:1px solid #151515;min-width:0;overflow:hidden}
+h2{margin:0 0 12px 0;font-size:1.2em}
+.shop-grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr))}
+.card{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:14px;background:#050505;border:1px solid #151515;min-width:0;font-size:1em}
+.row{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.bird{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.emoji{font-size:28px;flex-shrink:0}
+.bname{font-weight:700;font-size:1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1}
+.muted{color:var(--muted);font-size:0.95em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.price{font-weight:900;color:var(--accent);white-space:nowrap}
+.inventory{display:flex;flex-direction:column;gap:10px}
+.inv-item{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px;border-radius:12px;background:#050505;border:1px solid #151515;min-width:0;font-size:1em}
+.inv-sub{color:var(--muted);font-size:0.95em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.float{position:fixed;right:18px;top:18px;padding:10px 14px;border-radius:999px;background:#0c0c0c;border:1px solid #141414;color:var(--accent);font-weight:900;opacity:0;transform:translateY(-6px) scale(.98);transition:transform 420ms cubic-bezier(.2,.9,.2,1),opacity 420ms}
 .float.show{opacity:1;transform:translateY(-26px) scale(1)}
-#pcWarning{display:none;text-align:center;color:var(--accent);font-weight:800;font-size:24px;line-height:1.5}
-#pcWarning .emoji{font-size:64px;margin-bottom:16px;display:block}
+#pcWarning{display:none;text-align:center;color:var(--accent);font-weight:900;font-size:28px;line-height:1.5}
+#pcWarning .emoji{font-size:80px;margin-bottom:20px;display:block}
 #mainUI, .bnav{display:none}
 </style>
 </head>
@@ -67,7 +67,7 @@ h2{margin:0 0 10px 0;font-size:16px}
 <aside class="panel" id="side">
   <h2>Инвентарь</h2>
   <div class="inventory" id="inventory"></div>
-  <div style="margin-top:10px;display:flex;justify-content:space-between" class="muted">
+  <div style="margin-top:12px;display:flex;justify-content:space-between" class="muted">
     <div>Доход/сек</div>
     <div id="totalIncome">0.00</div>
   </div>
@@ -125,7 +125,7 @@ function renderInv(){
     const cnt=state.birds[it.id];
     const el=document.createElement('div');
     el.className='inv-item';
-    el.innerHTML=`<div style="display:flex;gap:8px;align-items:center;min-width:0"><div class="emoji">${it.emoji}</div><div style="min-width:0;overflow:hidden"><div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.name}</div><div class="inv-sub">${fmtF(it.income*cnt)}/c</div></div></div><div class="inv-sub">×${cnt}</div>`;
+    el.innerHTML=`<div style="display:flex;gap:10px;align-items:center;min-width:0"><div class="emoji">${it.emoji}</div><div style="min-width:0;overflow:hidden"><div style="font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${it.name}</div><div class="inv-sub">${fmtF(it.income*cnt)}/c</div></div></div><div class="inv-sub">×${cnt}</div>`;
     inv.appendChild(el);
   });
 }
