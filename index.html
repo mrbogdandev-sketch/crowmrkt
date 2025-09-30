@@ -693,6 +693,67 @@
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
         }
+
+        /* Новые улучшения */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 3000;
+            transform: translateX(150%);
+            transition: transform 0.4s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .floating-coins {
+            position: absolute;
+            font-size: 1.2rem;
+            color: var(--accent-color);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-50px); opacity: 0; }
+        }
+
+        .bird-count {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        .rarity-indicator {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .rarity-common { background: #b0b0b0; }
+        .rarity-rare { background: #2a9d8f; }
+        .rarity-epic { background: #9d2a8f; }
+        .rarity-legendary { background: #e9c46a; }
     </style>
 </head>
 <body>
@@ -782,56 +843,63 @@
         </div>
     </div>
 
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notification-text">Птица успешно куплена!</span>
+    </div>
+
     <script>
-        // Данные птиц
+        // Данные птиц с редкостью
         const birdsData = [
-            { id: 1, name: "Воробей", emoji: "🐦", price: 50, income: 1 },
-            { id: 2, name: "Голубь", emoji: "🕊️", price: 100, income: 2 },
-            { id: 3, name: "Ворона", emoji: "🐦‍⬛", price: 200, income: 4 },
-            { id: 4, name: "Сова", emoji: "🦉", price: 500, income: 10 },
-            { id: 5, name: "Орел", emoji: "🦅", price: 1000, income: 20 },
-            { id: 6, name: "Пингвин", emoji: "🐧", price: 1500, income: 30 },
-            { id: 7, name: "Попугай", emoji: "🦜", price: 2000, income: 40 },
-            { id: 8, name: "Лебедь", emoji: "🦢", price: 3000, income: 60 },
-            { id: 9, name: "Фламинго", emoji: "🦩", price: 4000, income: 80 },
-            { id: 10, name: "Павлин", emoji: "🦚", price: 5000, income: 100 },
-            { id: 11, name: "Колибри", emoji: "🐦", price: 7500, income: 150 },
-            { id: 12, name: "Альбатрос", emoji: "🐦", price: 10000, income: 200 },
-            { id: 13, name: "Пеликан", emoji: "🦢", price: 15000, income: 300 },
-            { id: 14, name: "Журавль", emoji: "🦩", price: 20000, income: 400 },
-            { id: 15, name: "Ибис", emoji: "🐦", price: 25000, income: 500 },
-            { id: 16, name: "Киви", emoji: "🐦", price: 30000, income: 600 },
-            { id: 17, name: "Тукан", emoji: "🦜", price: 40000, income: 800 },
-            { id: 18, name: "Какапо", emoji: "🦜", price: 50000, income: 1000 },
-            { id: 19, name: "Кондор", emoji: "🦅", price: 75000, income: 1500 },
-            { id: 20, name: "Феникс", emoji: "🔥", price: 100000, income: 2000 },
-            { id: 21, name: "Сокол", emoji: "🦅", price: 125000, income: 2500 },
-            { id: 22, name: "Птица-носорог", emoji: "🐦", price: 150000, income: 3000 },
-            { id: 23, name: "Кетцаль", emoji: "🐦", price: 200000, income: 4000 },
-            { id: 24, name: "Птица-секретарь", emoji: "🐦", price: 250000, income: 5000 },
-            { id: 25, name: "Крачка", emoji: "🐦", price: 300000, income: 6000 },
-            { id: 26, name: "Чайка", emoji: "🐦", price: 350000, income: 7000 },
-            { id: 27, name: "Баклан", emoji: "🐦", price: 400000, income: 8000 },
-            { id: 28, name: "Императорский пингвин", emoji: "🐧", price: 500000, income: 10000 },
-            { id: 29, name: "Беркут", emoji: "🦅", price: 750000, income: 15000 },
-            { id: 30, name: "Андский кондор", emoji: "🦅", price: 1000000, income: 20000 },
-            { id: 31, name: "Красный кардинал", emoji: "🐦", price: 1250000, income: 25000 },
-            { id: 32, name: "Золотой фазан", emoji: "🐦", price: 1500000, income: 30000 },
-            { id: 33, name: "Райская птица", emoji: "🐦", price: 2000000, income: 40000 },
-            { id: 34, name: "Гиацинтовый ара", emoji: "🦜", price: 2500000, income: 50000 },
-            { id: 35, name: "Калифорнийский кондор", emoji: "🦅", price: 3000000, income: 60000 },
-            { id: 36, name: "Белоголовый орлан", emoji: "🦅", price: 4000000, income: 80000 },
-            { id: 37, name: "Черный лебедь", emoji: "🦢", price: 5000000, income: 100000 },
-            { id: 38, name: "Мандаринка", emoji: "🦆", price: 7500000, income: 150000 },
-            { id: 39, name: "Королевский альбатрос", emoji: "🐦", price: 10000000, income: 200000 },
-            { id: 40, name: "Золотой орел", emoji: "🦅", price: 15000000, income: 300000 }
+            { id: 1, name: "Воробей", emoji: "🐦", price: 50, income: 1, rarity: "common" },
+            { id: 2, name: "Голубь", emoji: "🕊️", price: 100, income: 2, rarity: "common" },
+            { id: 3, name: "Ворона", emoji: "🐦‍⬛", price: 200, income: 4, rarity: "common" },
+            { id: 4, name: "Сова", emoji: "🦉", price: 500, income: 10, rarity: "rare" },
+            { id: 5, name: "Орел", emoji: "🦅", price: 1000, income: 20, rarity: "rare" },
+            { id: 6, name: "Пингвин", emoji: "🐧", price: 1500, income: 30, rarity: "rare" },
+            { id: 7, name: "Попугай", emoji: "🦜", price: 2000, income: 40, rarity: "rare" },
+            { id: 8, name: "Лебедь", emoji: "🦢", price: 3000, income: 60, rarity: "epic" },
+            { id: 9, name: "Фламинго", emoji: "🦩", price: 4000, income: 80, rarity: "epic" },
+            { id: 10, name: "Павлин", emoji: "🦚", price: 5000, income: 100, rarity: "epic" },
+            { id: 11, name: "Колибри", emoji: "🐦", price: 7500, income: 150, rarity: "epic" },
+            { id: 12, name: "Альбатрос", emoji: "🐦", price: 10000, income: 200, rarity: "epic" },
+            { id: 13, name: "Пеликан", emoji: "🦢", price: 15000, income: 300, rarity: "legendary" },
+            { id: 14, name: "Журавль", emoji: "🦩", price: 20000, income: 400, rarity: "legendary" },
+            { id: 15, name: "Ибис", emoji: "🐦", price: 25000, income: 500, rarity: "legendary" },
+            { id: 16, name: "Киви", emoji: "🐦", price: 30000, income: 600, rarity: "legendary" },
+            { id: 17, name: "Тукан", emoji: "🦜", price: 40000, income: 800, rarity: "legendary" },
+            { id: 18, name: "Какапо", emoji: "🦜", price: 50000, income: 1000, rarity: "legendary" },
+            { id: 19, name: "Кондор", emoji: "🦅", price: 75000, income: 1500, rarity: "legendary" },
+            { id: 20, name: "Феникс", emoji: "🔥", price: 100000, income: 2000, rarity: "legendary" },
+            { id: 21, name: "Сокол", emoji: "🦅", price: 125000, income: 2500, rarity: "legendary" },
+            { id: 22, name: "Птица-носорог", emoji: "🐦", price: 150000, income: 3000, rarity: "legendary" },
+            { id: 23, name: "Кетцаль", emoji: "🐦", price: 200000, income: 4000, rarity: "legendary" },
+            { id: 24, name: "Птица-секретарь", emoji: "🐦", price: 250000, income: 5000, rarity: "legendary" },
+            { id: 25, name: "Крачка", emoji: "🐦", price: 300000, income: 6000, rarity: "legendary" },
+            { id: 26, name: "Чайка", emoji: "🐦", price: 350000, income: 7000, rarity: "legendary" },
+            { id: 27, name: "Баклан", emoji: "🐦", price: 400000, income: 8000, rarity: "legendary" },
+            { id: 28, name: "Императорский пингвин", emoji: "🐧", price: 500000, income: 10000, rarity: "legendary" },
+            { id: 29, name: "Беркут", emoji: "🦅", price: 750000, income: 15000, rarity: "legendary" },
+            { id: 30, name: "Андский кондор", emoji: "🦅", price: 1000000, income: 20000, rarity: "legendary" },
+            { id: 31, name: "Красный кардинал", emoji: "🐦", price: 1250000, income: 25000, rarity: "legendary" },
+            { id: 32, name: "Золотой фазан", emoji: "🐦", price: 1500000, income: 30000, rarity: "legendary" },
+            { id: 33, name: "Райская птица", emoji: "🐦", price: 2000000, income: 40000, rarity: "legendary" },
+            { id: 34, name: "Гиацинтовый ара", emoji: "🦜", price: 2500000, income: 50000, rarity: "legendary" },
+            { id: 35, name: "Калифорнийский кондор", emoji: "🦅", price: 3000000, income: 60000, rarity: "legendary" },
+            { id: 36, name: "Белоголовый орлан", emoji: "🦅", price: 4000000, income: 80000, rarity: "legendary" },
+            { id: 37, name: "Черный лебедь", emoji: "🦢", price: 5000000, income: 100000, rarity: "legendary" },
+            { id: 38, name: "Мандаринка", emoji: "🦆", price: 7500000, income: 150000, rarity: "legendary" },
+            { id: 39, name: "Королевский альбатрос", emoji: "🐦", price: 10000000, income: 200000, rarity: "legendary" },
+            { id: 40, name: "Золотой орел", emoji: "🦅", price: 15000000, income: 300000, rarity: "legendary" }
         ];
 
         // Состояние приложения
         let appState = {
             coins: 1250,
             ownedBirds: [1, 2, 3], // ID купленных птиц
-            totalIncome: 0
+            totalIncome: 0,
+            lastIncomeTime: Date.now()
         };
 
         // Инициализация приложения
@@ -847,6 +915,9 @@
             
             // Настройка обработчиков событий
             setupEventListeners();
+            
+            // Запуск пассивного дохода
+            startPassiveIncome();
         });
 
         // Загрузка данных пользователя
@@ -864,11 +935,14 @@
             birdsData.forEach(bird => {
                 const isOwned = appState.ownedBirds.includes(bird.id);
                 const canAfford = appState.coins >= bird.price;
+                const ownedCount = appState.ownedBirds.filter(id => id === bird.id).length;
                 
                 const birdCard = document.createElement('div');
                 birdCard.className = 'bird-card';
                 birdCard.innerHTML = `
                     ${isOwned ? '<div class="owned-badge"><i class="fas fa-check"></i> Куплено</div>' : ''}
+                    ${ownedCount > 1 ? `<div class="bird-count">${ownedCount}</div>` : ''}
+                    <div class="rarity-indicator rarity-${bird.rarity}"></div>
                     <div class="bird-emoji">${bird.emoji}</div>
                     <div class="bird-name">${bird.name}</div>
                     <div class="bird-price"><i class="fas fa-coins"></i> ${bird.price.toLocaleString()} монет</div>
@@ -919,7 +993,7 @@
             
             document.getElementById('news-btn').addEventListener('click', function() {
                 // В будущем здесь будет переход на страницу новостей
-                alert('Страница новостей будет добавлена в следующем обновлении!');
+                showNotification('Страница новостей будет добавлена в следующем обновлении!');
             });
             
             // Закрытие модальных окон
@@ -957,8 +1031,14 @@
                 appState.coins -= bird.price;
                 appState.ownedBirds.push(birdId);
                 
+                // Анимация монет
+                createCoinAnimation();
+                
                 updateStats();
                 renderBirds();
+                
+                // Уведомление
+                showNotification(`Вы купили ${bird.name}!`);
                 
                 // Анимация успешной покупки
                 const boughtCard = document.querySelector(`[data-id="${birdId}"]`).parentElement;
@@ -993,19 +1073,27 @@
                 return;
             }
             
+            // Группировка птиц по ID
+            const birdCounts = {};
+            appState.ownedBirds.forEach(birdId => {
+                birdCounts[birdId] = (birdCounts[birdId] || 0) + 1;
+            });
+            
             const ownedBirdsList = document.createElement('div');
             ownedBirdsList.className = 'birds-grid';
             ownedBirdsList.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
             
-            appState.ownedBirds.forEach(birdId => {
-                const bird = birdsData.find(b => b.id === birdId);
+            Object.keys(birdCounts).forEach(birdId => {
+                const bird = birdsData.find(b => b.id === parseInt(birdId));
                 if (bird) {
                     const birdCard = document.createElement('div');
                     birdCard.className = 'bird-card';
                     birdCard.innerHTML = `
+                        <div class="bird-count">${birdCounts[birdId]}</div>
+                        <div class="rarity-indicator rarity-${bird.rarity}"></div>
                         <div class="bird-emoji">${bird.emoji}</div>
                         <div class="bird-name">${bird.name}</div>
-                        <div class="bird-income"><i class="fas fa-chart-line"></i> +${bird.income.toLocaleString()}/час</div>
+                        <div class="bird-income"><i class="fas fa-chart-line"></i> +${(bird.income * birdCounts[birdId]).toLocaleString()}/час</div>
                     `;
                     ownedBirdsList.appendChild(birdCard);
                 }
@@ -1026,6 +1114,21 @@
             
             // Расчет общего дохода в день
             const dailyIncome = appState.totalIncome * 24;
+            
+            // Расчет времени до следующей покупки самой дорогой доступной птицы
+            const affordableBirds = birdsData.filter(bird => 
+                !appState.ownedBirds.includes(bird.id) && bird.price > appState.coins
+            );
+            
+            let timeToNextPurchase = "Недостаточно данных";
+            if (affordableBirds.length > 0) {
+                const cheapestBird = affordableBirds.reduce((prev, current) => 
+                    (prev.price < current.price) ? prev : current
+                );
+                const coinsNeeded = cheapestBird.price - appState.coins;
+                const hoursNeeded = Math.ceil(coinsNeeded / appState.totalIncome);
+                timeToNextPurchase = `${hoursNeeded} час.`;
+            }
             
             statsContent.innerHTML = `
                 <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
@@ -1061,7 +1164,62 @@
                     </div>
                     <p style="text-align: center; margin-top: 10px; color: var(--text-secondary);">${appState.ownedBirds.length} из ${birdsData.length} птиц</p>
                 </div>
+                <div style="margin-top: 25px; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <h3 style="margin-bottom: 10px; color: var(--accent-color);"><i class="fas fa-clock"></i> Время до следующей покупки:</h3>
+                    <p style="color: var(--text-color);">${timeToNextPurchase}</p>
+                </div>
             `;
+        }
+
+        // Показать уведомление
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+            
+            notificationText.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Создание анимации монет
+        function createCoinAnimation() {
+            for (let i = 0; i < 5; i++) {
+                const coin = document.createElement('div');
+                coin.className = 'floating-coins';
+                coin.innerHTML = '<i class="fas fa-coins"></i>';
+                coin.style.left = `${Math.random() * 100}%`;
+                coin.style.top = `${Math.random() * 100}%`;
+                coin.style.animation = `floatUp 1s ease-out forwards`;
+                
+                document.body.appendChild(coin);
+                
+                setTimeout(() => {
+                    coin.remove();
+                }, 1000);
+            }
+        }
+
+        // Запуск пассивного дохода
+        function startPassiveIncome() {
+            setInterval(() => {
+                const now = Date.now();
+                const timePassed = (now - appState.lastIncomeTime) / (1000 * 60 * 60); // В часах
+                
+                if (timePassed >= 1) {
+                    const income = Math.floor(appState.totalIncome * timePassed);
+                    appState.coins += income;
+                    appState.lastIncomeTime = now;
+                    
+                    updateStats();
+                    
+                    if (income > 0) {
+                        showNotification(`Пассивный доход: +${income} монет!`);
+                    }
+                }
+            }, 10000); // Проверяем каждые 10 секунд
         }
     </script>
 </body>
