@@ -3,1224 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CroMRKT - Птицы для пассивного дохода</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Технический перерыв</title>
     <style>
-        :root {
-            --primary-color: #2a9d8f;
-            --secondary-color: #1a1a1a;
-            --accent-color: #e9c46a;
-            --accent-glow: rgba(233, 196, 106, 0.3);
-            --text-color: #f1faee;
-            --text-secondary: #b0b0b0;
-            --glass-bg: rgba(25, 25, 25, 0.85);
-            --glass-border: rgba(233, 196, 106, 0.25);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
-            --card-bg: rgba(35, 35, 35, 0.9);
-            --success-color: #2ecc71;
-            --warning-color: #e74c3c;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: radial-gradient(circle at top right, #0a0a0a, #000000);
-            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
             padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding-bottom: 100px;
-            overflow-x: hidden;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(233, 196, 106, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(42, 157, 143, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(233, 196, 106, 0.03) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--glass-shadow);
-            overflow: hidden;
-            padding: 25px;
-            transition: all 0.4s ease;
-            position: relative;
-        }
-
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--glass-border);
-            position: relative;
-        }
-
-        .header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100px;
-            height: 2px;
-            background: var(--accent-color);
-            border-radius: 2px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .user-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 28px;
-            overflow: hidden;
-            border: 2px solid var(--glass-border);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s ease;
-            position: relative;
-        }
-
-        .user-avatar::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
-            border-radius: 50%;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .user-avatar:hover {
-            transform: scale(1.08) rotate(5deg);
-            box-shadow: 0 8px 25px var(--accent-glow);
-        }
-
-        .user-avatar:hover::before {
-            opacity: 1;
-        }
-
-        .user-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .user-name {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--text-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .user-level {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .level-bar {
-            width: 80px;
-            height: 4px;
+        .glass-container {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .level-progress {
-            height: 100%;
-            width: 60%;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            border-radius: 2px;
-        }
-
-        .stats {
-            display: flex;
-            gap: 20px;
-        }
-
-        .stat-item {
-            background: var(--card-bg);
-            padding: 15px 20px;
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 60px 40px;
             text-align: center;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-            min-width: 120px;
-            position: relative;
-            overflow: hidden;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        .stat-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
+        .main-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        .stat-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        .sub-text {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            color: #e0e0e0;
+            opacity: 0.9;
         }
 
-        .stat-item:hover::before {
-            transform: scaleX(1);
-        }
-
-        .stat-value {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: var(--accent-color);
-            margin-bottom: 5px;
-            display: flex;
+        .telegram-btn {
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .search-container {
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 18px 20px 18px 50px;
-            border-radius: 16px;
-            border: 1px solid var(--glass-border);
-            background: var(--card-bg);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            color: var(--text-color);
-            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
             transition: all 0.3s ease;
+            cursor: pointer;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
-        .search-input:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px var(--accent-glow), 0 8px 25px rgba(0, 0, 0, 0.3);
-            border-color: var(--accent-color);
-        }
-
-        .search-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-secondary);
-            font-size: 1.2rem;
-        }
-
-        .section-title {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: var(--text-color);
-        }
-
-        .section-title i {
-            color: var(--accent-color);
-        }
-
-        .birds-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .bird-card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            border: 1px solid var(--glass-border);
-            padding: 20px;
-            text-align: center;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            transition: all 0.4s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .bird-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(233, 196, 106, 0.05), rgba(42, 157, 143, 0.05));
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .bird-card:hover {
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-            border-color: var(--accent-color);
-        }
-
-        .bird-card:hover::before {
-            opacity: 1;
-        }
-
-        .bird-emoji {
-            font-size: 4rem;
-            margin-bottom: 15px;
-            transition: all 0.4s ease;
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-        }
-
-        .bird-card:hover .bird-emoji {
-            transform: scale(1.2) rotate(5deg);
-        }
-
-        .bird-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--text-color);
-        }
-
-        .bird-price {
-            color: var(--accent-color);
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            font-size: 1.1rem;
-        }
-
-        .bird-income {
-            font-size: 0.95rem;
-            opacity: 0.9;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-        }
-
-        .buy-btn {
-            background: linear-gradient(135deg, var(--primary-color), #21867a);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            padding: 12px 20px;
-            width: 100%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .buy-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .buy-btn:hover {
-            background: linear-gradient(135deg, #21867a, var(--primary-color));
+        .telegram-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(42, 157, 143, 0.4);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
 
-        .buy-btn:hover::before {
-            left: 100%;
+        .telegram-btn:active {
+            transform: translateY(0);
         }
 
-        .buy-btn:disabled {
-            background: #4a4a4a;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .buy-btn:disabled::before {
-            display: none;
-        }
-
-        .owned-badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--success-color);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 3px 10px rgba(46, 204, 113, 0.3);
-        }
-
-        .navigation {
-            display: flex;
-            justify-content: space-around;
-            padding: 20px 0;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-top: 1px solid var(--glass-border);
-            z-index: 1000;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.8rem;
-            cursor: pointer;
-            padding: 12px 25px;
-            border-radius: 16px;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-
-        .nav-btn::before {
-            content: '';
-            position: absolute;
-            bottom: 5px;
-            width: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            border-radius: 3px;
-            transition: width 0.3s ease;
-        }
-
-        .nav-btn:hover {
-            color: var(--accent-color);
-            transform: translateY(-5px);
-        }
-
-        .nav-btn:hover::before {
-            width: 30px;
-        }
-
-        .nav-label {
-            font-size: 0.85rem;
-            opacity: 0.8;
-            font-weight: 500;
-        }
-
-        /* Модальные окна */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.4s ease;
-            padding: 20px;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            width: 90%;
-            max-width: 700px;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 30px;
-            animation: slideUp 0.4s ease;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
-            position: relative;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        .modal-content::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        .modal-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(90deg, var(--text-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .close-modal {
-            background: transparent;
-            border: none;
-            color: var(--text-color);
-            font-size: 1.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .close-modal:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--accent-color);
-            transform: rotate(90deg);
+        .telegram-icon {
+            margin-right: 10px;
+            font-size: 1.3rem;
         }
 
         /* Адаптивность */
         @media (max-width: 768px) {
-            .birds-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            .glass-container {
+                padding: 40px 20px;
             }
             
-            .header {
-                flex-direction: column;
-                gap: 20px;
+            .main-text {
+                font-size: 2rem;
             }
             
-            .stats {
-                width: 100%;
-                justify-content: space-around;
+            .sub-text {
+                font-size: 1rem;
             }
             
-            .user-info {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            .stat-item {
-                min-width: 100px;
-                padding: 12px 15px;
-            }
-            
-            .user-avatar {
-                width: 60px;
-                height: 60px;
-                font-size: 24px;
-            }
-            
-            .user-name {
-                font-size: 1.4rem;
+            .telegram-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
             }
         }
 
-        @media (max-width: 480px) {
-            .birds-grid {
-                grid-template-columns: repeat(2, 1fr);
+        /* Анимация появления */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
             }
-            
-            .stat-item {
-                padding: 10px 12px;
-                min-width: auto;
-            }
-            
-            .user-avatar {
-                width: 50px;
-                height: 50px;
-                font-size: 20px;
-            }
-            
-            .navigation {
-                padding: 15px 0;
-            }
-            
-            .nav-btn {
-                padding: 10px 15px;
-                font-size: 1.5rem;
-            }
-            
-            .container {
-                padding: 20px 15px;
-            }
-            
-            body {
-                padding: 15px;
-                padding-bottom: 90px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* Анимация пульсации для новых элементов */
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(233, 196, 106, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(233, 196, 106, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(233, 196, 106, 0); }
+        .glass-container {
+            animation: fadeIn 0.8s ease-out;
         }
-
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-
-        /* Стили для скроллбара */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, var(--accent-color), var(--primary-color));
-        }
-
-        /* Новые улучшения */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--success-color);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            z-index: 3000;
-            transform: translateX(150%);
-            transition: transform 0.4s ease;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .floating-coins {
-            position: absolute;
-            font-size: 1.2rem;
-            color: var(--accent-color);
-            opacity: 0;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-50px); opacity: 0; }
-        }
-
-        .bird-count {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-        }
-
-        .rarity-indicator {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .rarity-common { background: #b0b0b0; }
-        .rarity-rare { background: #2a9d8f; }
-        .rarity-epic { background: #9d2a8f; }
-        .rarity-legendary { background: #e9c46a; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="user-info">
-                <div class="user-avatar" id="user-avatar">
-                    <!-- Аватар будет загружен из Telegram -->
-                </div>
-                <div class="user-details">
-                    <div class="user-name" id="user-name">Алексей</div>
-                    <div class="user-level">
-                        <span>Уровень 5</span>
-                        <div class="level-bar">
-                            <div class="level-progress"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value"><i class="fas fa-coins"></i> <span id="coins">1,250</span></div>
-                    <div class="stat-label">Монеты</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value"><i class="fas fa-dove"></i> <span id="birds-count">3</span></div>
-                    <div class="stat-label">Птицы</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value"><i class="fas fa-chart-line"></i> <span id="income-hour">45/час</span></div>
-                    <div class="stat-label">Доход</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-input" placeholder="Поиск птиц...">
-        </div>
-
-        <h2 class="section-title"><i class="fas fa-store"></i> Магазин птиц</h2>
-
-        <div class="birds-grid" id="birds-grid">
-            <!-- Птицы будут добавлены через JavaScript -->
-        </div>
+    <div class="glass-container">
+        <h1 class="main-text">Технический перерыв</h1>
+        <p class="sub-text">До 10 октября</p>
+        <a href="https://t.me/crowmrkt" class="telegram-btn" target="_blank">
+            <span class="telegram-icon">✈</span>
+            К новостям
+        </a>
     </div>
-
-    <!-- Нижняя панель навигации -->
-    <div class="navigation">
-        <button class="nav-btn" id="inventory-btn">
-            <i class="fas fa-briefcase"></i>
-            <span class="nav-label">Инвентарь</span>
-        </button>
-        <button class="nav-btn" id="stats-btn">
-            <i class="fas fa-chart-bar"></i>
-            <span class="nav-label">Статистика</span>
-        </button>
-        <button class="nav-btn" id="news-btn">
-            <i class="fas fa-tv"></i>
-            <span class="nav-label">Новости</span>
-        </button>
-    </div>
-
-    <!-- Модальное окно инвентаря -->
-    <div class="modal" id="inventory-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-briefcase"></i> Инвентарь</h2>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div id="inventory-content">
-                <!-- Содержимое инвентаря -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно статистики -->
-    <div class="modal" id="stats-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title"><i class="fas fa-chart-bar"></i> Статистика</h2>
-                <button class="close-modal">&times;</button>
-            </div>
-            <div id="stats-content">
-                <!-- Содержимое статистики -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Уведомление -->
-    <div class="notification" id="notification">
-        <i class="fas fa-check-circle"></i>
-        <span id="notification-text">Птица успешно куплена!</span>
-    </div>
-
-    <script>
-        // Данные птиц с редкостью
-        const birdsData = [
-            { id: 1, name: "Воробей", emoji: "🐦", price: 50, income: 1, rarity: "common" },
-            { id: 2, name: "Голубь", emoji: "🕊️", price: 100, income: 2, rarity: "common" },
-            { id: 3, name: "Ворона", emoji: "🐦‍⬛", price: 200, income: 4, rarity: "common" },
-            { id: 4, name: "Сова", emoji: "🦉", price: 500, income: 10, rarity: "rare" },
-            { id: 5, name: "Орел", emoji: "🦅", price: 1000, income: 20, rarity: "rare" },
-            { id: 6, name: "Пингвин", emoji: "🐧", price: 1500, income: 30, rarity: "rare" },
-            { id: 7, name: "Попугай", emoji: "🦜", price: 2000, income: 40, rarity: "rare" },
-            { id: 8, name: "Лебедь", emoji: "🦢", price: 3000, income: 60, rarity: "epic" },
-            { id: 9, name: "Фламинго", emoji: "🦩", price: 4000, income: 80, rarity: "epic" },
-            { id: 10, name: "Павлин", emoji: "🦚", price: 5000, income: 100, rarity: "epic" },
-            { id: 11, name: "Колибри", emoji: "🐦", price: 7500, income: 150, rarity: "epic" },
-            { id: 12, name: "Альбатрос", emoji: "🐦", price: 10000, income: 200, rarity: "epic" },
-            { id: 13, name: "Пеликан", emoji: "🦢", price: 15000, income: 300, rarity: "legendary" },
-            { id: 14, name: "Журавль", emoji: "🦩", price: 20000, income: 400, rarity: "legendary" },
-            { id: 15, name: "Ибис", emoji: "🐦", price: 25000, income: 500, rarity: "legendary" },
-            { id: 16, name: "Киви", emoji: "🐦", price: 30000, income: 600, rarity: "legendary" },
-            { id: 17, name: "Тукан", emoji: "🦜", price: 40000, income: 800, rarity: "legendary" },
-            { id: 18, name: "Какапо", emoji: "🦜", price: 50000, income: 1000, rarity: "legendary" },
-            { id: 19, name: "Кондор", emoji: "🦅", price: 75000, income: 1500, rarity: "legendary" },
-            { id: 20, name: "Феникс", emoji: "🔥", price: 100000, income: 2000, rarity: "legendary" },
-            { id: 21, name: "Сокол", emoji: "🦅", price: 125000, income: 2500, rarity: "legendary" },
-            { id: 22, name: "Птица-носорог", emoji: "🐦", price: 150000, income: 3000, rarity: "legendary" },
-            { id: 23, name: "Кетцаль", emoji: "🐦", price: 200000, income: 4000, rarity: "legendary" },
-            { id: 24, name: "Птица-секретарь", emoji: "🐦", price: 250000, income: 5000, rarity: "legendary" },
-            { id: 25, name: "Крачка", emoji: "🐦", price: 300000, income: 6000, rarity: "legendary" },
-            { id: 26, name: "Чайка", emoji: "🐦", price: 350000, income: 7000, rarity: "legendary" },
-            { id: 27, name: "Баклан", emoji: "🐦", price: 400000, income: 8000, rarity: "legendary" },
-            { id: 28, name: "Императорский пингвин", emoji: "🐧", price: 500000, income: 10000, rarity: "legendary" },
-            { id: 29, name: "Беркут", emoji: "🦅", price: 750000, income: 15000, rarity: "legendary" },
-            { id: 30, name: "Андский кондор", emoji: "🦅", price: 1000000, income: 20000, rarity: "legendary" },
-            { id: 31, name: "Красный кардинал", emoji: "🐦", price: 1250000, income: 25000, rarity: "legendary" },
-            { id: 32, name: "Золотой фазан", emoji: "🐦", price: 1500000, income: 30000, rarity: "legendary" },
-            { id: 33, name: "Райская птица", emoji: "🐦", price: 2000000, income: 40000, rarity: "legendary" },
-            { id: 34, name: "Гиацинтовый ара", emoji: "🦜", price: 2500000, income: 50000, rarity: "legendary" },
-            { id: 35, name: "Калифорнийский кондор", emoji: "🦅", price: 3000000, income: 60000, rarity: "legendary" },
-            { id: 36, name: "Белоголовый орлан", emoji: "🦅", price: 4000000, income: 80000, rarity: "legendary" },
-            { id: 37, name: "Черный лебедь", emoji: "🦢", price: 5000000, income: 100000, rarity: "legendary" },
-            { id: 38, name: "Мандаринка", emoji: "🦆", price: 7500000, income: 150000, rarity: "legendary" },
-            { id: 39, name: "Королевский альбатрос", emoji: "🐦", price: 10000000, income: 200000, rarity: "legendary" },
-            { id: 40, name: "Золотой орел", emoji: "🦅", price: 15000000, income: 300000, rarity: "legendary" }
-        ];
-
-        // Состояние приложения
-        let appState = {
-            coins: 1250,
-            ownedBirds: [1, 2, 3], // ID купленных птиц
-            totalIncome: 0,
-            lastIncomeTime: Date.now()
-        };
-
-        // Инициализация приложения
-        document.addEventListener('DOMContentLoaded', function() {
-            // Загрузка данных пользователя из Telegram (заглушка)
-            loadUserData();
-            
-            // Отображение птиц
-            renderBirds();
-            
-            // Обновление статистики
-            updateStats();
-            
-            // Настройка обработчиков событий
-            setupEventListeners();
-            
-            // Запуск пассивного дохода
-            startPassiveIncome();
-        });
-
-        // Загрузка данных пользователя
-        function loadUserData() {
-            // В реальном приложении здесь будет интеграция с Telegram API
-            // Заглушка для демонстрации
-            document.getElementById('user-avatar').innerHTML = "<i class='fas fa-user'></i>";
-        }
-
-        // Отображение птиц
-        function renderBirds() {
-            const birdsGrid = document.getElementById('birds-grid');
-            birdsGrid.innerHTML = '';
-            
-            birdsData.forEach(bird => {
-                const isOwned = appState.ownedBirds.includes(bird.id);
-                const canAfford = appState.coins >= bird.price;
-                const ownedCount = appState.ownedBirds.filter(id => id === bird.id).length;
-                
-                const birdCard = document.createElement('div');
-                birdCard.className = 'bird-card';
-                birdCard.innerHTML = `
-                    ${isOwned ? '<div class="owned-badge"><i class="fas fa-check"></i> Куплено</div>' : ''}
-                    ${ownedCount > 1 ? `<div class="bird-count">${ownedCount}</div>` : ''}
-                    <div class="rarity-indicator rarity-${bird.rarity}"></div>
-                    <div class="bird-emoji">${bird.emoji}</div>
-                    <div class="bird-name">${bird.name}</div>
-                    <div class="bird-price"><i class="fas fa-coins"></i> ${bird.price.toLocaleString()} монет</div>
-                    <div class="bird-income"><i class="fas fa-chart-line"></i> +${bird.income.toLocaleString()}/час</div>
-                    <button class="buy-btn" data-id="${bird.id}" ${isOwned || !canAfford ? 'disabled' : ''}>
-                        ${isOwned ? '<i class="fas fa-check"></i> Куплено' : '<i class="fas fa-shopping-cart"></i> Купить'}
-                    </button>
-                `;
-                
-                birdsGrid.appendChild(birdCard);
-            });
-        }
-
-        // Обновление статистики
-        function updateStats() {
-            document.getElementById('coins').textContent = appState.coins.toLocaleString();
-            document.getElementById('birds-count').textContent = appState.ownedBirds.length;
-            
-            // Расчет общего дохода
-            appState.totalIncome = appState.ownedBirds.reduce((total, birdId) => {
-                const bird = birdsData.find(b => b.id === birdId);
-                return total + (bird ? bird.income : 0);
-            }, 0);
-            
-            document.getElementById('income-hour').textContent = `${appState.totalIncome.toLocaleString()}/час`;
-        }
-
-        // Настройка обработчиков событий
-        function setupEventListeners() {
-            // Покупка птиц
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('buy-btn') && !e.target.disabled) {
-                    const birdId = parseInt(e.target.getAttribute('data-id'));
-                    buyBird(birdId);
-                }
-            });
-            
-            // Модальные окна
-            document.getElementById('inventory-btn').addEventListener('click', function() {
-                showInventory();
-                document.getElementById('inventory-modal').style.display = 'flex';
-            });
-            
-            document.getElementById('stats-btn').addEventListener('click', function() {
-                showStats();
-                document.getElementById('stats-modal').style.display = 'flex';
-            });
-            
-            document.getElementById('news-btn').addEventListener('click', function() {
-                // В будущем здесь будет переход на страницу новостей
-                showNotification('Страница новостей будет добавлена в следующем обновлении!');
-            });
-            
-            // Закрытие модальных окон
-            document.querySelectorAll('.close-modal').forEach(button => {
-                button.addEventListener('click', function() {
-                    document.querySelectorAll('.modal').forEach(modal => {
-                        modal.style.display = 'none';
-                    });
-                });
-            });
-            
-            // Закрытие модальных окон при клике вне их
-            document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
-                    if (e.target === modal) {
-                        modal.style.display = 'none';
-                    }
-                });
-            });
-            
-            // Поиск птиц
-            document.querySelector('.search-input').addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                filterBirds(searchTerm);
-            });
-        }
-
-        // Покупка птицы
-        function buyBird(birdId) {
-            const bird = birdsData.find(b => b.id === birdId);
-            
-            if (!bird) return;
-            
-            if (appState.coins >= bird.price) {
-                appState.coins -= bird.price;
-                appState.ownedBirds.push(birdId);
-                
-                // Анимация монет
-                createCoinAnimation();
-                
-                updateStats();
-                renderBirds();
-                
-                // Уведомление
-                showNotification(`Вы купили ${bird.name}!`);
-                
-                // Анимация успешной покупки
-                const boughtCard = document.querySelector(`[data-id="${birdId}"]`).parentElement;
-                boughtCard.classList.add('pulse');
-                setTimeout(() => {
-                    boughtCard.classList.remove('pulse');
-                }, 2000);
-            }
-        }
-
-        // Фильтрация птиц по поисковому запросу
-        function filterBirds(searchTerm) {
-            const birdCards = document.querySelectorAll('.bird-card');
-            
-            birdCards.forEach(card => {
-                const birdName = card.querySelector('.bird-name').textContent.toLowerCase();
-                if (birdName.includes(searchTerm)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
-        // Показать инвентарь
-        function showInventory() {
-            const inventoryContent = document.getElementById('inventory-content');
-            inventoryContent.innerHTML = '<h3 style="margin-bottom: 20px; color: var(--accent-color);">Ваши птицы:</h3>';
-            
-            if (appState.ownedBirds.length === 0) {
-                inventoryContent.innerHTML += '<p style="text-align: center; padding: 20px; color: var(--text-secondary);">У вас пока нет птиц. Купите первую птицу в магазине!</p>';
-                return;
-            }
-            
-            // Группировка птиц по ID
-            const birdCounts = {};
-            appState.ownedBirds.forEach(birdId => {
-                birdCounts[birdId] = (birdCounts[birdId] || 0) + 1;
-            });
-            
-            const ownedBirdsList = document.createElement('div');
-            ownedBirdsList.className = 'birds-grid';
-            ownedBirdsList.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
-            
-            Object.keys(birdCounts).forEach(birdId => {
-                const bird = birdsData.find(b => b.id === parseInt(birdId));
-                if (bird) {
-                    const birdCard = document.createElement('div');
-                    birdCard.className = 'bird-card';
-                    birdCard.innerHTML = `
-                        <div class="bird-count">${birdCounts[birdId]}</div>
-                        <div class="rarity-indicator rarity-${bird.rarity}"></div>
-                        <div class="bird-emoji">${bird.emoji}</div>
-                        <div class="bird-name">${bird.name}</div>
-                        <div class="bird-income"><i class="fas fa-chart-line"></i> +${(bird.income * birdCounts[birdId]).toLocaleString()}/час</div>
-                    `;
-                    ownedBirdsList.appendChild(birdCard);
-                }
-            });
-            
-            inventoryContent.appendChild(ownedBirdsList);
-        }
-
-        // Показать статистику
-        function showStats() {
-            const statsContent = document.getElementById('stats-content');
-            
-            // Расчет общей стоимости инвентаря
-            const totalInventoryValue = appState.ownedBirds.reduce((total, birdId) => {
-                const bird = birdsData.find(b => b.id === birdId);
-                return total + (bird ? bird.price : 0);
-            }, 0);
-            
-            // Расчет общего дохода в день
-            const dailyIncome = appState.totalIncome * 24;
-            
-            // Расчет времени до следующей покупки самой дорогой доступной птицы
-            const affordableBirds = birdsData.filter(bird => 
-                !appState.ownedBirds.includes(bird.id) && bird.price > appState.coins
-            );
-            
-            let timeToNextPurchase = "Недостаточно данных";
-            if (affordableBirds.length > 0) {
-                const cheapestBird = affordableBirds.reduce((prev, current) => 
-                    (prev.price < current.price) ? prev : current
-                );
-                const coinsNeeded = cheapestBird.price - appState.coins;
-                const hoursNeeded = Math.ceil(coinsNeeded / appState.totalIncome);
-                timeToNextPurchase = `${hoursNeeded} час.`;
-            }
-            
-            statsContent.innerHTML = `
-                <div class="stats-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
-                    <div class="stat-item">
-                        <div class="stat-value"><i class="fas fa-coins"></i> ${appState.coins.toLocaleString()}</div>
-                        <div class="stat-label">Текущий баланс</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value"><i class="fas fa-dove"></i> ${appState.ownedBirds.length}</div>
-                        <div class="stat-label">Куплено птиц</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value"><i class="fas fa-chart-line"></i> ${appState.totalIncome.toLocaleString()}</div>
-                        <div class="stat-label">Доход в час</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value"><i class="fas fa-coins"></i> ${dailyIncome.toLocaleString()}</div>
-                        <div class="stat-label">Доход в день</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value"><i class="fas fa-piggy-bank"></i> ${totalInventoryValue.toLocaleString()}</div>
-                        <div class="stat-label">Стоимость инвентаря</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value"><i class="fas fa-trophy"></i> ${Math.round(appState.ownedBirds.length / birdsData.length * 100)}%</div>
-                        <div class="stat-label">Прогресс коллекции</div>
-                    </div>
-                </div>
-                <div style="margin-top: 20px;">
-                    <h3 style="margin-bottom: 15px; color: var(--accent-color); display: flex; align-items: center; gap: 10px;"><i class="fas fa-chart-bar"></i> Прогресс коллекции:</h3>
-                    <div style="background: rgba(30, 30, 30, 0.9); border-radius: 10px; height: 20px; margin-top: 10px; border: 1px solid var(--glass-border); overflow: hidden;">
-                        <div style="background: linear-gradient(90deg, var(--primary-color), var(--accent-color)); height: 100%; width: ${(appState.ownedBirds.length / birdsData.length * 100)}%; transition: width 0.5s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-size: 0.7rem; color: white; font-weight: bold;"></div>
-                    </div>
-                    <p style="text-align: center; margin-top: 10px; color: var(--text-secondary);">${appState.ownedBirds.length} из ${birdsData.length} птиц</p>
-                </div>
-                <div style="margin-top: 25px; background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border);">
-                    <h3 style="margin-bottom: 10px; color: var(--accent-color);"><i class="fas fa-clock"></i> Время до следующей покупки:</h3>
-                    <p style="color: var(--text-color);">${timeToNextPurchase}</p>
-                </div>
-            `;
-        }
-
-        // Показать уведомление
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notification-text');
-            
-            notificationText.textContent = message;
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-
-        // Создание анимации монет
-        function createCoinAnimation() {
-            for (let i = 0; i < 5; i++) {
-                const coin = document.createElement('div');
-                coin.className = 'floating-coins';
-                coin.innerHTML = '<i class="fas fa-coins"></i>';
-                coin.style.left = `${Math.random() * 100}%`;
-                coin.style.top = `${Math.random() * 100}%`;
-                coin.style.animation = `floatUp 1s ease-out forwards`;
-                
-                document.body.appendChild(coin);
-                
-                setTimeout(() => {
-                    coin.remove();
-                }, 1000);
-            }
-        }
-
-        // Запуск пассивного дохода
-        function startPassiveIncome() {
-            setInterval(() => {
-                const now = Date.now();
-                const timePassed = (now - appState.lastIncomeTime) / (1000 * 60 * 60); // В часах
-                
-                if (timePassed >= 1) {
-                    const income = Math.floor(appState.totalIncome * timePassed);
-                    appState.coins += income;
-                    appState.lastIncomeTime = now;
-                    
-                    updateStats();
-                    
-                    if (income > 0) {
-                        showNotification(`Пассивный доход: +${income} монет!`);
-                    }
-                }
-            }, 10000); // Проверяем каждые 10 секунд
-        }
-    </script>
 </body>
 </html>
