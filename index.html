@@ -20,6 +20,8 @@
             align-items: center;
             color: #fff;
             padding: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .glass-container {
@@ -33,6 +35,7 @@
             max-width: 500px;
             width: 100%;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
         }
 
         .main-text {
@@ -41,6 +44,7 @@
             margin-bottom: 30px;
             color: #ffffff;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s ease;
         }
 
         .sub-text {
@@ -48,6 +52,7 @@
             margin-bottom: 40px;
             color: #e0e0e0;
             opacity: 0.9;
+            transition: all 0.1s ease;
         }
 
         .telegram-btn {
@@ -67,6 +72,7 @@
             transition: all 0.3s ease;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-bottom: 15px;
         }
 
         .telegram-btn:hover {
@@ -82,6 +88,73 @@
         .telegram-icon {
             margin-right: 10px;
             font-size: 1.3rem;
+        }
+
+        .secret-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 215, 0, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        .secret-btn:hover {
+            background: rgba(255, 215, 0, 0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .secret-btn:active {
+            transform: translateY(0);
+        }
+
+        .secret-icon {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+
+        /* Стили для эффекта "поломки" */
+        .glitch {
+            animation: glitch 0.1s infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+
+        .black-screen {
+            background: #000000 !important;
+            color: #000000 !important;
+        }
+
+        .hidden {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+
+        .crack {
+            position: fixed;
+            background: linear-gradient(45deg, transparent 45%, #ff0000 50%, transparent 55%);
+            background-size: 10px 10px;
+            z-index: 9999;
+            pointer-events: none;
         }
 
         /* Адаптивность */
@@ -101,6 +174,11 @@
             .telegram-btn {
                 padding: 12px 25px;
                 font-size: 1rem;
+            }
+            
+            .secret-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
             }
         }
 
@@ -122,13 +200,314 @@
     </style>
 </head>
 <body>
-    <div class="glass-container">
-        <h1 class="main-text">Технический перерыв</h1>
-        <p class="sub-text">До 10 октября</p>
-        <a href="https://t.me/crowmrkt" class="telegram-btn" target="_blank">
+    <div class="glass-container" id="container">
+        <h1 class="main-text" id="mainText">Технический перерыв</h1>
+        <p class="sub-text" id="subText">До 10 октября</p>
+        <a href="https://t.me/crowmrkt" class="telegram-btn" target="_blank" id="telegramBtn">
             <span class="telegram-icon">✈</span>
             К новостям
         </a>
+        <br>
+        <button class="secret-btn" id="secretBtn">
+            <span class="secret-icon">⚠</span>
+            Секрет
+        </button>
     </div>
+
+    <script>
+        const secretBtn = document.getElementById('secretBtn');
+        const container = document.getElementById('container');
+        const mainText = document.getElementById('mainText');
+        const subText = document.getElementById('subText');
+        const telegramBtn = document.getElementById('telegramBtn');
+        const body = document.body;
+
+        // Символы для рандомного текста
+        const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+        const cyrillicChars = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя';
+
+        // Аудио контекст
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+        // Функции для генерации звуков
+        function createGlitchSound() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'square';
+            filter.type = 'bandpass';
+            filter.frequency.value = 800 + Math.random() * 1000;
+            filter.Q.value = 10;
+            
+            oscillator.frequency.setValueAtTime(150 + Math.random() * 500, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(50 + Math.random() * 100, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+
+        function createBeepSound() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(800 + Math.random() * 400, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(200 + Math.random() * 300, audioContext.currentTime + 0.2);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.2);
+        }
+
+        function createStaticSound() {
+            const bufferSize = audioContext.sampleRate * 0.1;
+            const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+            const output = buffer.getChannelData(0);
+            
+            for (let i = 0; i < bufferSize; i++) {
+                output[i] = Math.random() * 2 - 1;
+            }
+            
+            const source = audioContext.createBufferSource();
+            const gainNode = audioContext.createGain();
+            
+            source.buffer = buffer;
+            source.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            gainNode.gain.setValueAtTime(0.05, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+            
+            source.start();
+        }
+
+        function createCrashSound() {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            const filter = audioContext.createBiquadFilter();
+            
+            oscillator.connect(filter);
+            filter.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sawtooth';
+            filter.type = 'lowpass';
+            filter.frequency.value = 800;
+            
+            oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.5);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }
+
+        function createCrackSound() {
+            const oscillator1 = audioContext.createOscillator();
+            const oscillator2 = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator1.connect(gainNode);
+            oscillator2.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator1.type = 'triangle';
+            oscillator2.type = 'triangle';
+            
+            oscillator1.frequency.setValueAtTime(1200, audioContext.currentTime);
+            oscillator1.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+            
+            oscillator2.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator2.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator1.start(audioContext.currentTime);
+            oscillator2.start(audioContext.currentTime);
+            oscillator1.stop(audioContext.currentTime + 0.1);
+            oscillator2.stop(audioContext.currentTime + 0.1);
+        }
+
+        // Функция для создания эффекта трещин
+        function createCrack() {
+            const crack = document.createElement('div');
+            crack.className = 'crack';
+            crack.style.cssText = `
+                top: ${Math.random() * 100}%;
+                left: ${Math.random() * 100}%;
+                width: ${50 + Math.random() * 200}px;
+                height: 2px;
+                transform: rotate(${Math.random() * 360}deg);
+            `;
+            body.appendChild(crack);
+            
+            setTimeout(() => {
+                if (crack.parentNode) {
+                    crack.parentNode.removeChild(crack);
+                }
+            }, 1000);
+        }
+
+        // Функция для генерации случайного текста
+        function getRandomText(length, originalText) {
+            let result = '';
+            const allChars = chars + cyrillicChars + chars.toUpperCase() + cyrillicChars.toUpperCase();
+            
+            for (let i = 0; i < length; i++) {
+                result += allChars.charAt(Math.floor(Math.random() * allChars.length));
+            }
+            return result;
+        }
+
+        // Функция для случайного цвета
+        function getRandomColor() {
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ff8000'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Функция для эффекта "поломки"
+        function breakWebsite() {
+            let count = 0;
+            const maxCount = 50; // 5 секунд при 100ms интервале
+            const breakInterval = 100; // ms
+
+            // Начинаем эффект глитча
+            container.classList.add('glitch');
+            body.style.background = '#ff0000';
+
+            // Начальный звук
+            createCrashSound();
+
+            const interval = setInterval(() => {
+                count++;
+
+                // Меняем текст на случайные символы
+                mainText.textContent = getRandomText(mainText.textContent.length, 'Технический перерыв');
+                subText.textContent = getRandomText(subText.textContent.length, 'До 10 октября');
+                
+                // Меняем цвета
+                mainText.style.color = getRandomColor();
+                subText.style.color = getRandomColor();
+                body.style.background = getRandomColor();
+                
+                // Случайно меняем размеры и позиции
+                mainText.style.transform = `scale(${0.8 + Math.random() * 0.4})`;
+                container.style.transform = `rotate(${Math.random() * 10 - 5}deg)`;
+                
+                // Случайные эффекты
+                if (Math.random() > 0.7) {
+                    container.style.borderRadius = `${Math.random() * 50}px`;
+                }
+                
+                if (Math.random() > 0.8) {
+                    container.style.backdropFilter = `blur(${Math.random() * 50}px)`;
+                }
+
+                // Случайные звуковые эффекты
+                if (Math.random() > 0.6) {
+                    createGlitchSound();
+                }
+                
+                if (Math.random() > 0.8) {
+                    createBeepSound();
+                }
+                
+                if (Math.random() > 0.9) {
+                    createStaticSound();
+                }
+                
+                if (Math.random() > 0.85) {
+                    createCrackSound();
+                    createCrack();
+                }
+
+                // Постепенно ухудшаем состояние
+                if (count > maxCount * 0.7) {
+                    container.style.opacity = 0.7 - (count / maxCount) * 0.7;
+                    // Больше звуков при завершении
+                    if (Math.random() > 0.5) {
+                        createStaticSound();
+                    }
+                }
+
+                // Завершаем эффект через 5 секунд
+                if (count >= maxCount) {
+                    clearInterval(interval);
+                    
+                    // Финальный звук
+                    createCrashSound();
+                    
+                    // Убираем все элементы
+                    container.classList.add('hidden');
+                    
+                    // Делаем черный экран
+                    setTimeout(() => {
+                        body.classList.add('black-screen');
+                        body.style.background = '#000000';
+                        container.style.display = 'none';
+                        
+                        // Добавляем сообщение после "падения"
+                        setTimeout(() => {
+                            const crashMessage = document.createElement('div');
+                            crashMessage.style.cssText = `
+                                position: fixed;
+                                top: 50%;
+                                left: 50%;
+                                transform: translate(-50%, -50%);
+                                color: #ff0000;
+                                font-size: 2rem;
+                                font-family: monospace;
+                                text-align: center;
+                                z-index: 1000;
+                                text-shadow: 0 0 10px #ff0000;
+                            `;
+                            crashMessage.innerHTML = 'SYSTEM FAILURE<br><span style="font-size: 1rem; color: #ff4444;">ERROR 0xDEADBEEF</span>';
+                            body.appendChild(crashMessage);
+                            
+                            // Финальный писк
+                            setTimeout(() => {
+                                createBeepSound();
+                            }, 500);
+                            
+                        }, 1000);
+                        
+                    }, 500);
+                }
+            }, breakInterval);
+        }
+
+        // Обработчик для кнопки "Секрет"
+        secretBtn.addEventListener('click', function() {
+            // Блокируем повторные нажатия
+            secretBtn.disabled = true;
+            secretBtn.style.opacity = '0.5';
+            secretBtn.style.cursor = 'not-allowed';
+            
+            // Запускаем эффект "поломки"
+            breakWebsite();
+            
+            // Добавляем анимацию нажатия
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 150);
+        });
+    </script>
 </body>
 </html>
